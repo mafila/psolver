@@ -31,8 +31,13 @@ $ git clone https://github.com/mafila/psolver
 
 
 ## usage
-Go to the project directory and run `python3 psolver.py`, choose the puzzle by pressing key 1-9.
+```
+cd psolver
+python3 psolver.py
+```
+Choose the puzzle by pressing key '1'-'9'.
 At first run you need to calibrate colors for the puzzle, 
 accurately place face of the puzzle in the grid and press '1', then enter face colors one by one.
 When the face is finished rotate puzzle as shown and enter colors for the next face.
+Continue until all colors are defined.
 
