@@ -10,7 +10,7 @@
 - 3x3x3 gear
 - Face turning octahedron
 
-##installation
+## installation
 Requires Python 3.6+, OpenCV 4.1+, GCC 7.4+
 Web camera required for this application
 
@@ -24,7 +24,7 @@ $ sudo -H pip3 install opencv-python screeninfo numpy
 ```
 
 
-##usage
+## usage
 Go to the project directory and run `./psolver.py`, choose the puzzle by pressing key 1-9.
 At first run you need to calibrate colors for the puzzle, 
 accurately place face of the puzzle in the grid and press '1', then enter face colors one by one.
