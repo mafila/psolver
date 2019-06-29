@@ -11,7 +11,8 @@
 - Face turning octahedron
 
 ## installation
-Requires Python 3.6+, OpenCV 4.1+, GCC 7.4+.
+Requires Python 3.6+, OpenCV 4.1+, GCC 7.4+
+
 Connected web camera required for this application
 
 Ubuntu 18.04 installation
