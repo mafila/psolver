@@ -21,7 +21,7 @@ $ python3 --version
 Python 3.6.8
 $ sudo apt update
 $ sudo apt install python3-pip gcc make
-$ sudo -H pip3 install opencv-python screeninfo numpy
+$ sudo -H pip3 install opencv-python screeninfo
 ```
 
 
