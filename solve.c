@@ -445,6 +445,7 @@ void doPruneStep(CUBE *pC) { // search with prune tables
 //
 int bestWTmoves[4], bestWTpos[4], bestWTlen, bestWTweight; // weight trick data structures
 
+//void weightTrickCheck(CUBE *pC, int wtLen, int *wtMoves, int *wtPos, int ind, int *pd, int *dd) {
 void weightTrickCheck(CUBE *pC, int wtLen, int *wtMoves, int *wtPos, int ind, int *pd, int *dd) {
 	CUBE C= *pC;
 	for(int p= (ind>0 ? wtPos[ind-1] : 0); p<wtPos[ind]; p++) moveCubeSelf(&C, moveList[p]);

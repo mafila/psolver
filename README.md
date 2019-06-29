@@ -11,7 +11,7 @@
 - Face turning octahedron
 
 ## installation
-Requires Python 3.6+, OpenCV 4.1+, GCC 7.4+
+Requires Git LFS, Python 3.6+, OpenCV 4.1+, GCC 7.4+
 
 Connected web camera required for this application
 
@@ -20,13 +20,18 @@ Ubuntu 18.04 installation
 $ python3 --version
 Python 3.6.8
 $ sudo apt update
-$ sudo apt install python3-pip gcc make
-$ sudo -H pip3 install opencv-python screeninfo
+$ sudo apt install git python3-pip gcc make curl software-properties-common
+$ sudo -H python3 -m pip install opencv-python screeninfo
+$ sudo add-apt-repository ppa:git-core/ppa
+$ curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+$ sudo apt install git-lfs
+$ git lfs install
+$ git clone https://github.com/mafila/psolver
 ```
 
 
 ## usage
-Go to the project directory and run `./psolver.py`, choose the puzzle by pressing key 1-9.
+Go to the project directory and run `python3 psolver.py`, choose the puzzle by pressing key 1-9.
 At first run you need to calibrate colors for the puzzle, 
 accurately place face of the puzzle in the grid and press '1', then enter face colors one by one.
 When the face is finished rotate puzzle as shown and enter colors for the next face.

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import numpy as np, subprocess as sp, cv2, re, sys, math, datetime, threading, hashlib, copy, screeninfo, allcolors
+import numpy as np, subprocess as sp, cv2, re, os, sys, math, datetime, threading, hashlib, copy, screeninfo, allcolors
 sin,cos= lambda z: math.sin(math.radians(z)), lambda z: math.cos(math.radians(z)) # sin,cos in degrees
 models= ['cube223','cube222','cube333','cube444','cube555','pyraminx','skewb','cube333gear','ftoctahedron']
 if sys.version_info<(3,6): print('Python 3.6 or above required. https://www.python.org/downloads/'); exit(-1)
@@ -387,9 +387,11 @@ class Algo:
 			("" if dic[st][0][0]=="\n" else "return ") + dic[st][0] + '\n;\n' for st in sk if dic[st][0]
 		])
 
-	def compile(self, cm): # prepare headers and compile solve.c
+	def compile(self, cm, force=False): # prepare headers and compile solve.c
 		print(); cm.sch2d.showInfo(); cm.mod3d.showInfo(); cm.moves.showInfo(); cm.turns.showInfo()
 		print(f'faces: {len(cm.faces.keys())}'); print()
+		fbin,fcfg = f'bin/{cm.algname}', f'cfg/{cm.file}.cr'
+		if not force and os.path.isfile(fbin) and os.path.getctime(fcfg)<os.path.getctime(fbin): return # don't compile
 
 		cm.moves.writeC('include/moves.h'); cm.turns.writeC('include/turns.h');  # write header files for moves & turns
 		f= open('include/movenames.h','w'); f.write(self.Dic1str(cm.moves.movename)); f.close() # move names
@@ -461,10 +463,13 @@ class Algo:
 			+ '}};\n')
 		f.close()
 
-		# compile solve.c with the prepared headers
-		p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-osolve','-march=native','-Wall','solve.c']); p.wait() 
+		# unpack algo data; compile solve.c with the prepared headers then save in bin/
+		tgz= f'data/arch/{cm.algname}.tgz'
+		if os.path.isfile(tgz): p= sp.Popen(['tar','xvzf',tgz,'-C','data/']); p.wait(); os.remove(tgz)
+		#p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-osolve','-march=native','-Wall','solve.c']); p.wait()
+		p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'-march=native','solve.c']); p.wait()
 		if p.returncode!=0: print(f'Error: solver compilation error {p.returncode}'); exit(-4)
-		if filecmd=='compile': print(f'{file} compiled'); exit(0)
+		if force: print(f'{file} compiled'); exit(0)
 
 	def md5(self, st, m): # unique md5 value for the step
 		return hashlib.md5(( m[0] + '|'
@@ -473,12 +478,12 @@ class Algo:
 				+ ','.join([ str(m) for msets in self.moves[st] for msetmove in msets for m in msetmove ])
 			).encode('ascii')).hexdigest()
 
-	def random(self): # get random position
-		return sp.Popen(['./solve','rand'], stdout=sp.PIPE).communicate()[0].decode('ascii').strip().replace(' ','') 
+	def random(self, cm): # get random position
+		return sp.Popen(['bin/'+cm.algname,'rand'], stdout=sp.PIPE).communicate()[0].decode('ascii').strip().replace(' ','') 
 
 	def run(self, cm, scr, cube): # run algo
 		scr.hide()
-		p= sp.Popen(['./solve',cube]); p.communicate() # run solver
+		p= sp.Popen(['bin/'+cm.algname,cube]); p.communicate() # run solver
 		solution= list(map( int, re.findall(r'\d+',open('.solution','r').read()) )) # read the solution
 		perpage= scr.perline*scr.lines
 		pages= [ solution[i:i+perpage] for i in range(0,len(solution),perpage) ] # split into pages
@@ -907,9 +912,9 @@ while True: # main loop - initialize detection of the cube and start reading col
 		scr.putTextCenter("compiling...",(scr.width/2,scr.height/2), fsz=2)
 		scr.show(); c= cv2.waitKey(33) # show waiting screen screen
 
-	cm.algo.compile(cm) # compile the model
+	cm.algo.compile(cm, filecmd=='compile') # compile the model
 
-	if filecmd=='rand':  cube= cm.algo.random() # generate random cube
+	if filecmd=='rand':  cube= cm.algo.random(cm) # generate random cube
 	elif filecmd is not None and len(filecmd)==len(cm.zero): cube= filecmd # the cube from command line
 	else: cube= None
 
@@ -942,7 +947,7 @@ while True: # main loop - initialize detection of the cube and start reading col
 				elif c==83 and face<len(cm.faces)-1: face+= 1; scr.drawModels(cm,face) # right arrow - next face
 				elif c==50: cm.followFrame= not cm.followFrame # 'a' - trigger auto-detect flag
 				elif c==51: cm.showDefMask= not cm.showDefMask # 'm' - trigger showDefMask flag
-				elif c==52: cube= cm.algo.random(); break # 'r' - random cube
+				elif c==52: cube= cm.algo.random(cm); break # 'r' - random cube
 				elif c==49: # 'c' - go to calibration mode
 					calcam= cam.findColors(cm, face, True)
 					colorIndex= 0; cam.cols[cm.faces[face][colorIndex]]= '?'
