@@ -47,7 +47,7 @@ $ python3 psolver.py
 ## usage
 Choose the puzzle by pressing key '1'-'9'.
 On the first run you need to calibrate colors for your puzzle.
-Accurately place the face of the puzzle in the grid and press '1', then enter face colors one by one by pressing corresponding color letter.
+Accurately place the face of the puzzle in the grid and press '1', then enter face colors one by one by pressing corresponding key ('r' for red, 'w' for white).
 When the face is finished rotate puzzle as shown and enter colors for the next face.
 Continue until all colors are defined.
 
