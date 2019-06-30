@@ -15,7 +15,7 @@ Requires Git LFS, Python 3.6+, OpenCV 4.1+, GCC 7.4+
 
 Connected web camera required for this application
 
-Ubuntu 18.04
+###Ubuntu 18.04
 ```
 $ python3 --version
 Python 3.6.8
@@ -32,7 +32,7 @@ $ python3 psolver.py
 
 ```
 
-Windows 10
+###Windows 10
 - Install latest Python from https://www.python.org/, add python to the Path environment variable
 - Install latest Git from https://gitforwindows.org/, Git LFS already included
 - Install 64-bit GCC from https://sourceware.org/cygwin/ (no additional packages required), add C:\cygwin64 to the Path environment variable
