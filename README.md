@@ -13,8 +13,6 @@
 ## installation
 Requires Git LFS, Python 3.6+, OpenCV 4.1+, GCC 7.4+
 
-Connected web camera required for this application
-
 ###### Ubuntu 18.04
 ```
 $ python3 --version
@@ -45,6 +43,8 @@ $ python3 psolver.py
 ```
 
 ## usage
+Connected web camera required for this application
+
 Choose the puzzle by pressing key '1'-'9'.
 On the first run you need to calibrate colors for your puzzle.
 Accurately place the face of the puzzle in the grid and press '1', then enter face colors one by one by pressing corresponding key ('r' for red, 'w' for white).
