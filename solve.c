@@ -911,7 +911,7 @@ int main(int argc,char *argv[]) {
 			turnCube(&cube, &cube0, rand()%N_TURNS); memcpy(cube.c,cube0.c,N_BLOCKS);
 		}
 		for(int i=0; i<10000+rand()%100000; i++) moveCubeSelf(&cube, rand()%N_MOVES);
-		for(int i=0; i<2; i++) moveCubeSelf(&cube, rand()%N_MOVES);
+		for(int i=0; i<1; i++) moveCubeSelf(&cube, rand()%N_MOVES);
 		if (!strcmp(ALG_NAME,"cube333gear")) { // 333g only => make all edges fit cube position
 			while(!cube.c[1]) moveCubeSelf(&cube, 0);
 			while(!cube.c[5]) moveCubeSelf(&cube, 2);

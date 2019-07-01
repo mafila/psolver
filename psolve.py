@@ -1,8 +1,11 @@
 #!/usr/bin/python3
-import numpy as np, subprocess as sp, cv2, re, os, sys, math, datetime, threading, hashlib, copy, screeninfo, allcolors
+import numpy as np, subprocess as sp, cv2, re, os, sys, math, datetime, threading, hashlib, copy, screeninfo, pickle
 sin,cos= lambda z: math.sin(math.radians(z)), lambda z: math.cos(math.radians(z)) # sin,cos in degrees
 models= ['cube223','cube222','cube333','cube444','cube555','pyraminx','skewb','cube333gear','ftoctahedron']
 if sys.version_info<(3,6): print('Python 3.6 or above required. https://www.python.org/downloads/'); exit(-1)
+allcolors= {} # colors dictionary {'cube333':{'R':[[0,0,255],[0,0,200],...],'G':[[0,255,0],...]}} 
+try: pkl= open('colors.pkl','rb'); allcolors= pickle.load(pkl); pkl.close()
+except: pass
 
 # Cube on plane
 # self.poly - dictionary of lists with points for each item
@@ -501,7 +504,7 @@ class CubeModel:
 		self.turns,self.moves= Transform('turns'),Transform('moves')
 		self.algo= Algo()
 		self.faces,self.defcol,self.facecol,self.colname = {},{},{},{}
-		self.cmap= allcolors.data[self.algname]= allcolors.data[self.algname] if self.algname in allcolors.data else {}
+		self.cmap= allcolors[self.algname]= allcolors[self.algname] if self.algname in allcolors else {}
 		mode= -1 # currend state: scheme2d, model3d, algo, etc
 		for line in [x.rstrip() for x in open(f'cfg/{file}.cr')]: # iterate file line by line and search for patterns
 			line= re.sub(r'\s+',' ',line.strip()) # strip and raplace all whitespaces with tab
@@ -747,19 +750,20 @@ class ProcessCam:
 		self.scrFrame= cv2.flip(frame,1) # flip & save source frame
 		self.frame= cv2.resize(self.scrFrame, None, fx=self.ratio, fy=self.ratio, interpolation=cv2.INTER_AREA)
 
-	def saveColors(self, cm, updateMap=False): # save colors in the model and write updated color map to allcolors.py
+	def saveColors(self, cm, updateMap=False): # save colors in the model and write updated color map to colors.pkl
 		for n in self.cols: # update model's colors
 			cm.sch2d.colors[n]= cm.mod3d.colors[n]= self.cols[n] 
-		if updateMap: # force update allcolors.py
+		if updateMap: # force update colors.pkl
 			for n,c in self.cols.items():
 				if c not in cm.cmap: cm.cmap[c]= []
 				cm.cmap[c].append([int(self.avgHSV[n][0]), int(self.avgHSV[n][1]), int(self.avgHSV[n][2])])
 			cm.cmap[c]= cm.cmap[c][-16:] # keep last 16 color points
-			f= open('allcolors.py','w'); f.write('data={\n')
-			for fn,cl in allcolors.data.items(): # write out {'cube333.cr': {'R':[[75,125,100],[76,126,101],...],...}
-				L=[ f"'{cn}':[[{'],['.join( ','.join(str(v) for v in c) for c in lst )}]],\n" for cn,lst in cl.items() ]
-				f.write( f"'{fn}':{{ \n{''.join(L)}\t}},\n" )
-			f.write('}'); f.close()
+			pkl= open('colors.pkl', 'wb'); pickle.dump(allcolors, pkl); pkl.close()
+			#f= open('allcolors.py','w'); f.write('data={\n')
+			#for fn,cl in allcolors.data.items(): # write out {'cube333.cr': {'R':[[75,125,100],[76,126,101],...],...}
+			#	L=[ f"'{cn}':[[{'],['.join( ','.join(str(v) for v in c) for c in lst )}]],\n" for cn,lst in cl.items() ]
+			#	f.write( f"'{fn}':{{ \n{''.join(L)}\t}},\n" )
+			#f.write('}'); f.close()
 
 	def nearlestColor(self, cm, tc, face=None): # find nearest color: model; color; face of the model, None - every face
 		dist= lambda z: ( # my color distance not ideal but fast
@@ -905,12 +909,12 @@ while True: # main loop - initialize detection of the cube and start reading col
 		for j,f in enumerate(models): cubModDict[j] = CubeModel(f) # cube types - load all files
 		scr.chooseModel(cubModDict)
 		while not cm: # choose model loop if model is not defined
-			c= cv2.waitKey(33)
+			c= cv2.waitKeyEx(33)
 			if ord('1')<=c and c<=ord(str(len(models))): cm= cubModDict[c-ord('1')] # 1,2,3 - cube number
 			elif c==27: exit(0) # exit from the program
 		scr.img[:]= (32,32,32)
 		scr.putTextCenter("compiling...",(scr.width/2,scr.height/2), fsz=2)
-		scr.show(); c= cv2.waitKey(33) # show waiting screen screen
+		scr.show(); # show waiting screen screen
 
 	cm.algo.compile(cm, filecmd=='compile') # compile the model
 
@@ -927,12 +931,12 @@ while True: # main loop - initialize detection of the cube and start reading col
 		scr.drawColorMap(cm); cam.findColors(cm, face); scr.drawCamFrame(cm, cam); scr.drawModels(cm) # show everything
 		cm.mod3d.draw(cm, scr, scr.modX1, scr.modY2+scr.modH-scr.modW, scr.modW, scr.modW, cm.defcol, start=True)
 		while not cm.mod3d.draw(cm, scr): # show origami cartoon
-			cam.getFrame(); cam.camP= {}; scr.drawCamFrame(cm, cam); cv2.imshow("window", scr.img); cv2.waitKey(33) 
+			cam.getFrame(); cam.camP= {}; scr.drawCamFrame(cm, cam); cv2.imshow("window", scr.img); cv2.waitKey(1) 
 		scr.drawColorMap(cm); scr.drawModels(cm,face); scr.preparing= False # initialize screen objects
 
 		time0,frameCnt= datetime.datetime.now(), 0
 		while True: # find colors loop
-			c= cv2.waitKey(33) # keyboard processing & show screen updates
+			c= cv2.waitKeyEx(1) # keyboard processing & show screen updates
 
 			if cm.mode==0: # find colors mode
 				if face>=len(cm.faces): # all faces are filled
@@ -943,16 +947,15 @@ while True: # main loop - initialize detection of the cube and start reading col
 				elif c==13: face= len(cm.faces) # enter - try to checkout
 				elif c==32 and cam.cols: # space - save & move to the next face
 					cam.saveColors(cm); face+= 1; scr.drawModels(cm,face); scr.showColorsStat(cm)
-				elif c==81 and face>0: face-= 1; scr.drawModels(cm,face) # left arrow - previous face
-				elif c==83 and face<len(cm.faces)-1: face+= 1; scr.drawModels(cm,face) # right arrow - next face
-				elif c==50: cm.followFrame= not cm.followFrame # 'a' - trigger auto-detect flag
-				elif c==51: cm.showDefMask= not cm.showDefMask # 'm' - trigger showDefMask flag
-				elif c==52: cube= cm.algo.random(cm); break # 'r' - random cube
-				elif c==49: # 'c' - go to calibration mode
+				elif c in (65361,65364,65366) and face>0: face-= 1; scr.drawModels(cm,face) # left arrow
+				elif c in (65363,65362,65365) and face<len(cm.faces)-1: face+= 1; scr.drawModels(cm,face) # right arrow
+				elif c==50: cm.followFrame= not cm.followFrame # '2' - trigger auto-detect flag
+				elif c==51: cm.showDefMask= not cm.showDefMask # '3' - trigger showDefMask flag
+				elif c==52: cube= cm.algo.random(cm); break # '4' - random cube
+				elif c==49: # '1' - go to calibration mode
 					calcam= cam.findColors(cm, face, True)
 					colorIndex= 0; cam.cols[cm.faces[face][colorIndex]]= '?'
 					cm.mode= 1
-				elif c!=-1: print('c=',c)
 
 			elif cm.mode==1: # color calibration mode
 				scr.drawCamFrame(cm, cam)
@@ -969,8 +972,7 @@ while True: # main loop - initialize detection of the cube and start reading col
 				elif c==8 and colorIndex>0: # backspace - clear last color
 					cam.cols[cm.faces[face][colorIndex]]= ''
 					colorIndex-= 1; cam.cols[ cm.faces[face][colorIndex] ]= '?' 
-				elif c==255: cm.cmap.clear(); scr.drawColorMap(cm) # enter - clear palette
-				elif c!=-1: print('c=',c)
+				elif c==65535: cm.cmap.clear(); scr.drawColorMap(cm) # del - clear palette
 
 			frameCnt+= 1; time1= datetime.datetime.now(); time= (time1-time0).total_seconds()
 			if time>1:
@@ -994,13 +996,13 @@ while True: # main loop - initialize detection of the cube and start reading col
 
 		scr.showSolutionPage(cm, solPages[page] if len(solPages)>0 else [], page, len(solPages)) # first page
 		while True: # walk throw pages; wait for escape, then clear colors and start again
-			c= cv2.waitKey(33)
+			c= cv2.waitKeyEx(33)
 			if c==27: 
 				cube= file= filecmd= cm= None; break
-			elif c in (81,84,86) and page>0: # left arrow - previous page
+			elif c in (65361,65364,65366) and page>0: # left arrow - previous page
 				page-= 1; cm.mod3d.colors= pagePos[page].copy()
 				scr.showSolutionPage(cm, solPages[page], page, len(solPages)) 
-			elif c in (83,82,85) and page<len(solPages)-1: # right arrow - next page
+			elif c in (65363,65362,65365) and page<len(solPages)-1: # right arrow - next page
 				page+= 1; pagePos[page]= cm.mod3d.colors.copy()
 				scr.showSolutionPage(cm, solPages[page], page, len(solPages))
 			elif c!=-1: print('c=',c)
