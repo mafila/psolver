@@ -474,7 +474,8 @@ class Algo:
 		tgz= f'data/arch/{cm.algname}.tgz'
 		if os.path.isfile(tgz): p= sp.Popen(['tar','xvzf',tgz,'-C','data/']); p.wait(); os.remove(tgz)
 		#p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-osolve','-march=native','-Wall','solve.c']); p.wait()
-		p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'-march=native','solve.c']); p.wait()
+		#p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'-march=native','solve.c']); p.wait()
+		p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'--mno-cygwin','solve.c']); p.wait()
 		if p.returncode!=0: print(f'Error: solver compilation error {p.returncode}'); exit(-4)
 		if force: print(f'{file} compiled'); exit(0)
 
@@ -486,11 +487,15 @@ class Algo:
 			).encode('ascii')).hexdigest()
 
 	def random(self, cm): # get random position
-		return sp.Popen(['bin/'+cm.algname,'rand'], stdout=sp.PIPE).communicate()[0].decode('ascii').strip().replace(' ','') 
+        p= sp.Popen(['bin/'+cm.algname,'rand'], stdout=sp.PIPE)
+        s= p.communicate()[0].decode('ascii').strip().replace(' ','')
+        if p.returncode!=0: print(f"Error: can't run bin/{cm.algname} code {p.returncode}")
+		return s
 
 	def run(self, cm, scr, cube): # run algo
 		scr.hide()
-		p= sp.Popen(['bin/'+cm.algname,cube]); p.communicate() # run solver
+		p= sp.Popen(['bin/'+cm.algname,cube]); p.wait() # run solver
+        if p.returncode!=0: print(f"Error: can't run bin/{cm.algname} code {p.returncode}")
 		solution= list(map( int, re.findall(r'\d+',open('.solution','r').read()) )) # read the solution
 		perpage= scr.perline*scr.lines
 		pages= [ solution[i:i+perpage] for i in range(0,len(solution),perpage) ] # split into pages
@@ -951,8 +956,8 @@ while True: # main loop - initialize detection of the cube and start reading col
 				elif c==13: face= len(cm.faces) # enter - try to checkout
 				elif c==32 and cam.cols: # space - save & move to the next face
 					cam.saveColors(cm); face+= 1; scr.drawModels(cm,face); scr.showColorsStat(cm)
-				elif c in (65361,65364,65366) and face>0: face-= 1; scr.drawModels(cm,face) # left arrow
-				elif c in (65363,65362,65365) and face<len(cm.faces)-1: face+= 1; scr.drawModels(cm,face) # right arrow
+				elif c in (65361,65364,65366,2555904,2490368,2162688) and face>0: face-= 1; scr.drawModels(cm,face) # left arrow
+				elif c in (65363,65362,65365,2424832,2621440,2228224) and face<len(cm.faces)-1: face+= 1; scr.drawModels(cm,face) # right arrow
 				elif c==50: cm.followFrame= not cm.followFrame # '2' - trigger auto-detect flag
 				elif c==51: cm.showDefMask= not cm.showDefMask # '3' - trigger showDefMask flag
 				elif c==52: cube= cm.algo.random(cm); break # '4' - random cube
@@ -976,7 +981,7 @@ while True: # main loop - initialize detection of the cube and start reading col
 				elif c==8 and colorIndex>0: # backspace - clear last color
 					cam.cols[cm.faces[face][colorIndex]]= ''
 					colorIndex-= 1; cam.cols[ cm.faces[face][colorIndex] ]= '?' 
-				elif c==65535: cm.cmap.clear(); scr.drawColorMap(cm) # del - clear palette
+				elif c in (65535,3014656): cm.cmap.clear(); scr.drawColorMap(cm) # del - clear palette
 
 			frameCnt+= 1; time1= datetime.datetime.now(); time= (time1-time0).total_seconds()
 			if time>1:
@@ -1003,10 +1008,10 @@ while True: # main loop - initialize detection of the cube and start reading col
 			c= cv2.waitKeyEx(33)
 			if c==27: 
 				cube= file= filecmd= cm= None; break
-			elif c in (65361,65364,65366) and page>0: # left arrow - previous page
+			elif c in (65361,65364,65366,2555904,2490368,2162688) and page>0: # left arrow - previous page
 				page-= 1; cm.mod3d.colors= pagePos[page].copy()
 				scr.showSolutionPage(cm, solPages[page], page, len(solPages)) 
-			elif c in (65363,65362,65365) and page<len(solPages)-1: # right arrow - next page
+			elif c in (65363,65362,65365,2424832,2621440,2228224) and page<len(solPages)-1: # right arrow - next page
 				page+= 1; pagePos[page]= cm.mod3d.colors.copy()
 				scr.showSolutionPage(cm, solPages[page], page, len(solPages))
 			elif c!=-1: print('c=',c)
