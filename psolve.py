@@ -472,10 +472,10 @@ class Algo:
 
 		# unpack algo data; compile solve.c with the prepared headers then save in bin/
 		tgz= f'data/arch/{cm.algname}.tgz'
-		if os.path.isfile(tgz): p= sp.Popen(['tar','xvzf',tgz,'-C','data/']); p.wait(); os.remove(tgz)
+		if os.path.isfile(tgz): p= sp.Popen(['tar','xvzf',tgz,'-C','data/']); p.wait(); #os.remove(tgz)
 		#p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-osolve','-march=native','-Wall','solve.c']); p.wait()
-		#p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'-march=native','solve.c']); p.wait()
-		p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'solve.c']); p.wait()
+		p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'-march=native','solve.c']); p.wait()
+		#p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'solve.c']); p.wait()
 		if p.returncode!=0: print(f'Error: solver compilation error {p.returncode}'); exit(-4)
 		if force: print(f'{file} compiled'); exit(0)
 
