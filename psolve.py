@@ -3,7 +3,7 @@ import numpy as np, subprocess as sp, cv2, re, os, sys, math, datetime, threadin
 if sys.version_info<(3,6): print('Python 3.6 or above required. https://www.python.org/downloads/'); exit(-1)
 sin,cos= lambda z: math.sin(math.radians(z)), lambda z: math.cos(math.radians(z)) # sin,cos in degrees
 
-isWinRelease= True
+isWinRelease= False
 models= ['cube223','cube222','cube333','cube444','cube555','pyraminx','skewb','cube333gear','ftoctahedron']
 allcolors= {} # colors dictionary {'cube333':{'R':[[0,0,255],[0,0,200],...],'G':[[0,255,0],...]}} 
 try: pkl= open('colors.pkl','rb'); allcolors= pickle.load(pkl); pkl.close()
