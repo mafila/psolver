@@ -3,7 +3,7 @@ import numpy as np, subprocess as sp, cv2, re, os, sys, math, datetime, threadin
 if sys.version_info<(3,6): print('Python 3.6 or above required. https://www.python.org/downloads/'); exit(-1)
 sin,cos= lambda z: math.sin(math.radians(z)), lambda z: math.cos(math.radians(z)) # sin,cos in degrees
 
-isWinRelease= False
+isWinRelease= True
 models= ['cube223','cube222','cube333','cube444','cube555','pyraminx','skewb','cube333gear','ftoctahedron']
 allcolors= {} # colors dictionary {'cube333':{'R':[[0,0,255],[0,0,200],...],'G':[[0,255,0],...]}} 
 try: pkl= open('colors.pkl','rb'); allcolors= pickle.load(pkl); pkl.close()
@@ -475,7 +475,7 @@ class Algo:
 		if os.path.isfile(tgz): p= sp.Popen(['tar','xvzf',tgz,'-C','data/']); p.wait(); os.remove(tgz)
 		#p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-osolve','-march=native','-Wall','solve.c']); p.wait()
 		#p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'-march=native','solve.c']); p.wait()
-		p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'--mno-cygwin','solve.c']); p.wait()
+		p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'solve.c']); p.wait()
 		if p.returncode!=0: print(f'Error: solver compilation error {p.returncode}'); exit(-4)
 		if force: print(f'{file} compiled'); exit(0)
 
@@ -487,15 +487,15 @@ class Algo:
 			).encode('ascii')).hexdigest()
 
 	def random(self, cm): # get random position
-        p= sp.Popen(['bin/'+cm.algname,'rand'], stdout=sp.PIPE)
-        s= p.communicate()[0].decode('ascii').strip().replace(' ','')
-        if p.returncode!=0: print(f"Error: can't run bin/{cm.algname} code {p.returncode}")
+		p= sp.Popen(['bin/'+cm.algname,'rand'], stdout=sp.PIPE)
+		s= p.communicate()[0].decode('ascii').strip().replace(' ','')
+		if p.returncode!=0: print(f"Error: can't run bin/{cm.algname} code {p.returncode}")
 		return s
 
 	def run(self, cm, scr, cube): # run algo
 		scr.hide()
 		p= sp.Popen(['bin/'+cm.algname,cube]); p.wait() # run solver
-        if p.returncode!=0: print(f"Error: can't run bin/{cm.algname} code {p.returncode}")
+		if p.returncode!=0: print(f"Error: can't run bin/{cm.algname} code {p.returncode}")
 		solution= list(map( int, re.findall(r'\d+',open('.solution','r').read()) )) # read the solution
 		perpage= scr.perline*scr.lines
 		pages= [ solution[i:i+perpage] for i in range(0,len(solution),perpage) ] # split into pages
@@ -561,6 +561,7 @@ class MainScreen:
 		self.mapW, self.mapH = int(self.width*0.3-6*sSz), self.height-4*sSz # color map width and height
 		self.mapX, self.mapY = self.width-self.mapW-2*sSz, sSz*2 # color map position
 		self.perline, self.lines = 8,4 # solution sizes
+		#self.perline, self.lines = 2,2 # solution sizes
 		self.warning, self.preparing = False,True # warning in colors stats and preparing model flag
 		self.shown= False
 
@@ -625,7 +626,7 @@ class MainScreen:
 				)+'\n'.join(list(f'&1{c}&0 - {cm.colname[c.upper()]}' for c in list(set(cm.zero.lower())))) # list all colors by name from the model
 			else: txt= (
 				f'&1ESC&0 - exit and choose a new model\n'
-				f'&1LEFT,RIGHT arrow&0 - move along faces\n'
+				f'&1LEFT,RIGHT arrow&0 or &19&0,&10&0 - move along faces\n'
 				f'{"&1SPACE&0 - accept suggested colors" if cam.cols and cm.cmap and len(cm.cmap)>0 else ""}\n'
 				f'{"&1ENTER&0 - all colors are defined, solve the cube" if scr.showColorsStat(cm) else ""}\n'
 				f'{"&11&0 - calibration" if not cm.followFrame else ""}\n'
@@ -736,7 +737,7 @@ class MainScreen:
 		if page==npages-1 or len(solution)==0: # solved cube as a final step
 			cm.mod3d.draw(cm, self, x, y, int(w*0.8), int(h*0.8), cmap=cm.defcol, showcam=False) 
 		if npages>1: # page navigator
-			self.putTextCenter('page '+str(page+1)+'/'+str(npages)+' use Left-Right arrows to go through the pages', 
+			self.putTextCenter('page '+str(page+1)+'/'+str(npages)+' use Left-Right arrows or page number 0,1,... to go through the pages', 
 				(self.width/2, self.height-0.5*y0), (80,80,80), fsz=0.9)
 		self.show()
 
@@ -956,8 +957,8 @@ while True: # main loop - initialize detection of the cube and start reading col
 				elif c==13: face= len(cm.faces) # enter - try to checkout
 				elif c==32 and cam.cols: # space - save & move to the next face
 					cam.saveColors(cm); face+= 1; scr.drawModels(cm,face); scr.showColorsStat(cm)
-				elif c in (65361,65364,65366,2555904,2490368,2162688) and face>0: face-= 1; scr.drawModels(cm,face) # left arrow
-				elif c in (65363,65362,65365,2424832,2621440,2228224) and face<len(cm.faces)-1: face+= 1; scr.drawModels(cm,face) # right arrow
+				elif c in (65361,65364,65366,2424832,2228224,2621440,57) and face>0: face-= 1; scr.drawModels(cm,face) # left arrow
+				elif c in (65363,65362,65365,2162688,2490368,2555904,48) and face<len(cm.faces)-1: face+= 1; scr.drawModels(cm,face) # right arrow
 				elif c==50: cm.followFrame= not cm.followFrame # '2' - trigger auto-detect flag
 				elif c==51: cm.showDefMask= not cm.showDefMask # '3' - trigger showDefMask flag
 				elif c==52: cube= cm.algo.random(cm); break # '4' - random cube
@@ -993,7 +994,7 @@ while True: # main loop - initialize detection of the cube and start reading col
 		cm.mod3d.origami(1)
 
 	if c!=27: # colors are defined and not escape => run solver & show solution
-		if 'cube' not in locals() or not cube: # build cube string with defined colors from the model
+		if not cube: # build cube string with defined colors from the model
 			cube= ''.join([cm.sch2d.colors[c].lower() for c in sorted(cm.sch2d.colors.keys())]) 
 		else:
 			for i,c in enumerate(cube): cm.mod3d.colors[i]= c.upper() # predefined cube - write colors to the model
@@ -1008,10 +1009,20 @@ while True: # main loop - initialize detection of the cube and start reading col
 			c= cv2.waitKeyEx(33)
 			if c==27: 
 				cube= file= filecmd= cm= None; break
-			elif c in (65361,65364,65366,2555904,2490368,2162688) and page>0: # left arrow - previous page
+			elif c in (65361,65364,65366,2424832,2228224,2621440) and page>0: # left arrow - previous page
 				page-= 1; cm.mod3d.colors= pagePos[page].copy()
 				scr.showSolutionPage(cm, solPages[page], page, len(solPages)) 
-			elif c in (65363,65362,65365,2424832,2621440,2228224) and page<len(solPages)-1: # right arrow - next page
+			elif c in (65363,65362,65365,2162688,2490368,2555904) and page<len(solPages)-1: # right arrow - next page
 				page+= 1; pagePos[page]= cm.mod3d.colors.copy()
 				scr.showSolutionPage(cm, solPages[page], page, len(solPages))
+			elif ord('1')<=c and c<=ord('9'):
+				p= c-ord('1')
+				if p<len(solPages):
+					if p<page: 
+						page= p; cm.mod3d.colors= pagePos[page].copy()
+						scr.showSolutionPage(cm, solPages[page], page, len(solPages))
+					else:
+						for i in range(page,p):
+							page+= 1; pagePos[page]= cm.mod3d.colors.copy()
+							scr.showSolutionPage(cm, solPages[page], page, len(solPages))
 			elif c!=-1: print('c=',c)

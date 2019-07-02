@@ -148,8 +148,8 @@ void printCube(CUBE *pC) { // print the cube string and colored scheme for rubik
 	char *s= pC->c, cStr[256][8]= {{0}};
 	for(int i=0; i<256; i++) sprintf(cStr[i], "%c", (char)i);
 	strcpy(cStr[(int)'r'], "\033[0;41m"); strcpy(cStr[(int)'g'], "\033[0;42m");
-	strcpy(cStr[(int)'y'], "\033[0;103m"); strcpy(cStr[(int)'b'], "\033[0;44m");
-	strcpy(cStr[(int)'o'], "\033[0;43m"); strcpy(cStr[(int)'w'], "\033[0;47m");
+	strcpy(cStr[(int)'y'], "\033[0;43m"); strcpy(cStr[(int)'b'], "\033[0;44m");
+	strcpy(cStr[(int)'o'], "\033[1;45m"); strcpy(cStr[(int)'w'], "\033[0;47m");
 	int sz= 0;
 	if (!strcmp(ALG_NAME,"cube555")) sz= 5;
 	else if (!strcmp(ALG_NAME,"cube444")) sz= 4;
