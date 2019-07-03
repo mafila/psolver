@@ -1,0 +1,79 @@
+#!/bin/bash
+[ -d tst/ ] && cd tst/
+C="$1"
+V="$2"
+if [[ $V ]]; then V=".${V}"; fi
+
+function testg() {
+	cat "${C}${V}.test"|perl -pe 's/([0-9]+)m([0-9]+)[,\.]([0-9]+)s\s+(\d+)/$4 $1 $2 $3 $4/'
+}
+function tests() {
+	awk '{printf "%s  %3s %2dm%02d.%03d\n",$1,$2,$3,$4,$5}'
+}
+
+AVGT=`cat ${C}${V}.test|perl -pe 's/.*([0-9]+)m([0-9]+)[,\.]([0-9]+)s\s+(\d+).*/$1 $2 $3/'|awk '
+{	s+=$1*60+$2+$3/1000	}
+END{	printf("%.3f sec",s/NR)	}'`
+
+AVGM=`cat ${C}${V}.test|awk '
+{	n=split($3,a,","); if(a[1]>0) { c++; s+=a[1] }	}
+END{	printf("%.3f moves",s/c)	}'`
+
+AVGML=`cat ${C}${V}.test|awk '
+{	n=split($3,a,","); if(a[1]>0) for(i=1;i<=n;i++) { c[i]++; s[i]+=a[i] }	}
+END{	printf("avg= %6.3f / %1.3f /",s[1]/c[1],s[2]/c[2]); for(i=3;i<=n;i++) printf("/ %6.3f ",s[i]/c[i]); printf("moves")	}'`
+
+AVGTL=`cat ${C}${V}.test|awk '
+{	n=split($4,a,","); for(i=1;i<=n;i++) { c[i]++; s[i]+=a[i] }	}
+END{	printf("avg=                /"); for(i=3;i<=n;i++) printf("/ %6.3f ",s[i]/c[i]/1000); printf("sec")	}'`
+
+
+if [[ $3 && $4 ]]; then CNT="$3/$4"
+else CNT=`wc -l "${C}${V}.test"|awk '{print $1}'`
+fi
+
+echo `date +'%D %T'` "|" "${C}${V}" "|" "$CNT" "|" "$AVGM" "|" "$AVGT" > .tstshowtmp
+echo "$AVGML" >> .tstshowtmp
+echo "$AVGTL" >> .tstshowtmp
+echo >> .tstshowtmp
+
+TL=$(( (`tput lines`-34)/2 ))
+echo 'by number of steps:' >> .tstshowtmp
+testg|sort -k2 -k3 -k4 -k5 -r -n|head -7|tests >> .tstshowtmp
+echo "..." >> .tstshowtmp
+testg|sort -k2 -k3 -k4 -k5 -r -n|tail -$TL|tests >> .tstshowtmp
+
+echo >> .tstshowtmp
+echo 'by time:' >> .tstshowtmp
+testg|sort -k3 -k4 -k5 -r -n|head -7|tests >> .tstshowtmp
+echo "..." >> .tstshowtmp
+testg|sort -k3 -k4 -k5 -r -n|tail -$TL|tests >> .tstshowtmp
+echo >> .tstshowtmp
+cat "${C}${V}.test"|awk -v k3="${K3}" '{split($3,a,",");print(a[1])}'|sort -n|uniq -c > .mcs
+for i in {1..72}; do echo ""; done >> .mcs
+
+cat .mcs|head -8 |tail -8 > .mcs1
+cat .mcs|head -16|tail -8 > .mcs2
+cat .mcs|head -24|tail -8 > .mcs3
+cat .mcs|head -32|tail -8 > .mcs4
+cat .mcs|head -40|tail -8 > .mcs5
+cat .mcs|head -48|tail -8 > .mcs6
+cat .mcs|head -56|tail -8 > .mcs7
+	cat .mcs|head -64|tail -8 > .mcs8
+	cat .mcs|head -72|tail -8 > .mcs9
+
+paste .mcs1 .mcs2 .mcs3 .mcs4 .mcs5 .mcs6 .mcs7 .mcs8 .mcs9 | while IFS="$(printf '\t')" read -r f1 f2 f3 f4 f5 f6 f7 f8 f9
+do
+	[ ! -z "$f1" ] && printf "%-12s|" "$f1"
+	[ ! -z "$f2" ] && printf "%-12s|" "$f2"
+			[ ! -z "$f3" ] && printf "%-12s|" "$f3"
+			[ ! -z "$f4" ] && printf "%-12s|" "$f4"
+			[ ! -z "$f5" ] && printf "%-12s|" "$f5"
+			[ ! -z "$f6" ] && printf "%-12s|" "$f6"
+			[ ! -z "$f7" ] && printf "%-12s|" "$f7"
+			[ ! -z "$f8" ] && printf "%-12s|" "$f8"
+			[ ! -z "$f9" ] && printf "%-12s|" "$f9"
+	echo
+done >> .tstshowtmp
+
+clear; cat .tstshowtmp

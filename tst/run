@@ -1,0 +1,24 @@
+#!/bin/bash
+[ -d tst/ ] && cd tst/
+CUB="$1"
+RUN="$2"
+CNT="$3"
+
+if [[ "$RUN" ]]; then RUN=".${RUN}"; fi
+if [[ -z "$CNT" ]]; then CNT=1000; fi
+
+echo "CUB=$CUB RUN=$RUN CNT=$CNT"
+echo -n > "${CUB}${RUN}.test"
+
+T0=0
+LC0=0
+for C in $(seq 1 $CNT); do
+	RND=`../bin/$CUB rand`
+	TIM=`(cd ..; time bin/$CUB $RND|grep -E 'moveLen=|moveTime='|sed -E "s/.*(moveLen=|moveTime=)([0-9,\.]+).*/\2/">tst/.tstruntmp) 2>&1|grep real|awk '{print $2}'`
+	echo $RND $TIM `cat .tstruntmp|awk '{print}' ORS=' '` >> "${CUB}${RUN}.test"
+	T1=`date +"%s.%N"`
+	LC1=`wc "${CUB}${RUN}.test"|awk '{print $1}'`
+	if (( `bc <<< "$T1-$T0>=1.0"` && $LC1>$LC0 )); then ./show "$1" "$2" "$C" "$CNT"; T0=$T1; LC0=$LC1; fi
+done
+
+./show "$1" "$2" "$C" "$CNT"

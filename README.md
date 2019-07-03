@@ -15,13 +15,13 @@ Requires Git LFS, Python 3.6+, OpenCV 4.1+, GCC 7.4+
 
 ###### Ubuntu 18.04
 ```
+$ sudo apt update
+$ sudo apt upgrade
 $ python3 --version
 Python 3.6.8
-$ sudo apt update
-$ sudo apt install git python3-pip gcc make curl software-properties-common
-$ sudo -H python3 -m pip install opencv-python screeninfo
+$ sudo apt install git python3-pip gcc make software-properties-common
+$ sudo -H python3 -m pip install numpy opencv-python screeninfo
 $ sudo add-apt-repository ppa:git-core/ppa
-$ curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
 $ sudo apt install git-lfs
 $ git lfs install
 $ git clone https://github.com/mafila/psolver
@@ -37,7 +37,7 @@ $ python3 psolver.py
 ```
 > git lfs install
 > git clone https://github.com/mafila/psolver
-> python -m pip install opencv-python screeninfo
+> python -m pip install numpy opencv-python screeninfo
 > cd psolver
 > python psolver.py
 ```
