@@ -8,7 +8,7 @@
 - Pyraminx
 - Skewb
 - 3x3x3 gear
-- Face turning octahedron
+- Face-turning Octahedron
 
 ## installation
 Requires Python 3.6+, OpenCV 4.1+, GCC 7.4+
