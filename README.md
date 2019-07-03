@@ -11,7 +11,7 @@
 - Face turning octahedron
 
 ## installation
-Requires Git LFS, Python 3.6+, OpenCV 4.1+, GCC 7.4+
+Requires Python 3.6+, OpenCV 4.1+, GCC 7.4+
 
 ###### Ubuntu 18.04
 ```
@@ -19,11 +19,8 @@ $ sudo apt update
 $ sudo apt upgrade
 $ python3 --version
 Python 3.6.8
-$ sudo apt install git python3-pip gcc make software-properties-common bc
+$ sudo apt install git python3-pip gcc make bc
 $ sudo -H python3 -m pip install numpy opencv-python screeninfo
-$ sudo add-apt-repository ppa:git-core/ppa
-$ sudo apt install git-lfs
-$ git lfs install
 $ git clone https://github.com/mafila/psolver
 $ cd psolver
 $ python3 psolver.py
@@ -31,10 +28,9 @@ $ python3 psolver.py
 
 ###### Windows 10
 - Install latest Python from https://www.python.org/, add python to the Path environment variable
-- Install latest Git from https://gitforwindows.org/, Git LFS already included
+- Install latest Git from https://gitforwindows.org/
 - Install 64-bit GCC from https://sourceware.org/cygwin/ (no additional packages required), add C:\cygwin64 to the Path environment variable
 ```
-> git lfs install
 > git clone https://github.com/mafila/psolver
 > python -m pip install numpy opencv-python screeninfo
 > cd psolver

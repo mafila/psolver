@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-import numpy as np, subprocess as sp, cv2, re, os, sys, math, datetime, threading, hashlib, copy, screeninfo, pickle
-if sys.version_info<(3,6): print('Python 3.6 or above required. https://www.python.org/downloads/'); exit(-1)
+import numpy as np, subprocess as sp, cv2, re, os, glob, sys, math, datetime, threading, hashlib, copy, screeninfo, pickle
 sin,cos= lambda z: math.sin(math.radians(z)), lambda z: math.cos(math.radians(z)) # sin,cos in degrees
 
 isWinRelease= False
@@ -471,8 +470,11 @@ class Algo:
 		f.close()
 
 		# unpack algo data; compile solve.c with the prepared headers then save in bin/
-		tgz= f'data/arch/{cm.algname}.tgz'
-		if os.path.isfile(tgz): p= sp.Popen(['tar','xvzf',tgz,'-C','data/']); p.wait(); #os.remove(tgz)
+		tgzList= sorted(glob.glob( f'data/arch/{cm.algname}.tgz*' ))
+		if len(tgzList)>0:
+			p1= sp.Popen(['cat']+tgzList, stdout=sp.PIPE)
+			p2= sp.Popen(['tar','xvzf','-','-C','data/'], stdin=p1.stdout)
+			p2.wait()
 		#p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-osolve','-march=native','-Wall','solve.c']); p.wait()
 		p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'-march=native','solve.c']); p.wait()
 		#p= sp.Popen(['gcc','-fopenmp','-O3','-Iinclude','-Icfg','-obin/'+cm.algname,'solve.c']); p.wait()
