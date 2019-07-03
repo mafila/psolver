@@ -739,7 +739,7 @@ class MainScreen:
 		if page==npages-1 or len(solution)==0: # solved cube as a final step
 			cm.mod3d.draw(cm, self, x, y, int(w*0.8), int(h*0.8), cmap=cm.defcol, showcam=False) 
 		if npages>1: # page navigator
-			self.putTextCenter('page '+str(page+1)+'/'+str(npages)+' use Left-Right arrows or page number 0,1,... to go through the pages', 
+			self.putTextCenter('page '+str(page+1)+'/'+str(npages)+' use Left-Right arrows or page number 1,2,... to go through the pages', 
 				(self.width/2, self.height-0.5*y0), (80,80,80), fsz=0.9)
 		self.show()
 
