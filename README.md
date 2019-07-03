@@ -19,10 +19,9 @@ $ sudo apt update
 $ sudo apt upgrade
 $ python3 --version
 Python 3.6.8
-$ sudo apt install git python3-pip gcc make software-properties-common curl bc
+$ sudo apt install git python3-pip gcc make software-properties-common bc
 $ sudo -H python3 -m pip install numpy opencv-python screeninfo
 $ sudo add-apt-repository ppa:git-core/ppa
-$ curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
 $ sudo apt install git-lfs
 $ git lfs install
 $ git clone https://github.com/mafila/psolver
