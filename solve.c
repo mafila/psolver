@@ -461,7 +461,7 @@ void weightTrickCheck(CUBE *pC, int wtLen, int *wtMoves, int *wtPos, int ind, in
 				}
 		}
 	}else
-		for(wtPos[ind+1]= wtPos[ind]+pd[ind]; wtPos[ind+1]<nMoves && wtPos[ind+1]<wtPos[ind]+dd[ind]; wtPos[ind+1]++) 
+		for(wtPos[ind+1]= wtPos[ind]+pd[ind]; wtPos[ind+1]<nMoves && wtPos[ind+1]<wtPos[ind]+dd[ind]; wtPos[ind+1]++)
 			weightTrickCheck(&C, wtLen, wtMoves, wtPos, ind+1, pd, dd);
 }
 
@@ -506,7 +506,7 @@ void doWeightTrick(CUBE *pC) {
 					int m0= am[m0i], m1= moveSpecial[m0][0], m2= am[m2i], p1d= 1
 					,	p2d= ( m2==m1 || m2==moveSpecial[m1][0] || m2==moveSpecial[m1][2] )
 					,	pd[2]= { p1d, p2d }, wtMoves[3]= { m0, m1, m2 }, wtPos[3];
-					for(wtPos[0]= 0; wtPos[0]<nMoves; wtPos[0]++) 
+					for(wtPos[0]= 0; wtPos[0]<nMoves; wtPos[0]++)
 						weightTrickCheck(&cube0, 3, wtMoves, wtPos, 0, pd, dd);
 				}
 		}
@@ -804,7 +804,7 @@ static inline void checkLastChance(CUBE *pC, int maxLen) { // check templated mo
 	#pragma omp parallel for schedule(dynamic,1024) collapse(1)
 		for(int msi=0; msi<msLastChanceLen; msi++) if (!solutionFound) {
 			int len= msLastChance[ msi*msLastChanceBlock ];
-			if (len<maxLen) { // limit with maximum achieved length 
+			if (len<maxLen) { // limit with maximum achieved length
 				CUBE C= *pC;
 				for(int i=1; i<=len; i++) moveCubeSelf(&C, msLastChance[ msi*msLastChanceBlock + i ]);
 				checkMoveSet(&C, msLastChance + msi*msLastChanceBlock);

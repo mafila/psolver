@@ -1,0 +1,42 @@
+07/04/19 06:22:23 | cube333.gcc9.1 | 976 | 19.382 moves | 9.322 sec
+avg= 19.382 / 0.000 // 19.382 moves
+avg=                //  9.319 sec
+
+by number of steps:
+gowggyobrrwogwwybrwgyrbrbororyyyogggbwbbooobbwwgrrywyy   21  0m13.553
+boyyryyybrbygyrygboogwoywrwwrrowbrbgowbbbowggorrwgwggo   21  0m12.125
+wgwgrwooggoybyroywbwoyowbrrbooowyygyyrrbbybrrggwwgbgbr   21  0m11.221
+brwwoybbyowbogyoggrgrbrwwbygbrgbrbgoyoyowowygwwgyyrorr   21  0m11.128
+bowybgyygrorowwobrgoyrggggyorwwybowbbyyyrbowbrgwborgrw   21  0m10.862
+owgywowgrorgwgowrgwybgyorwrybbybbbggoroorbwryrybwogyby   21  0m10.834
+rywrrgywwgwoobbgyywyroorbwrgbwyggbbgybbwwgborororygyoo   21  0m10.543
+...
+ywbyywwgrrgwobryrroyogwrgbrbboygowbbybgoryggyoogrowbww   16  0m09.447
+ryorwgwwybywwrrggwboggyygworbbgobgwrwboybryoybbrogoyro   16  0m08.856
+bbrwygrbwwwgoggbbooyyywyyggrbwrbrorygoyyooowgborgrrwwb   16  0m07.546
+wgwowobbwogobrgrrrbyooyybygygooowrrwgbywbrbygrwgbgwyry   16  0m06.032
+bbwrbwgwwgbbooybwyyyorggrwgyowrrbogyggoywooyrrbroyrwgb   16  0m05.981
+
+by time:
+owbwgygobrbogybrwwyorrbgrybgwbrwroywybggrywoyogwoobyrg   18  0m20.474
+gwgbyygrboyboowryyowybwrborrwwyrrbgwgrwgbbroyogwoggybo   20  0m19.289
+rgoroybwgyobbbgwwyobooryrwogryggbyywwowwyygrgrbrrwobgb   20  0m13.980
+ywgwybbrowyyoorbbrgoywwyggbrybgrgrorgworbooboybwggywrw   20  0m13.724
+gowggyobrrwogwwybrwgyrbrbororyyyogggbwbbooobbwwgrrywyy   21  0m13.553
+oobyyyybryybobwyrbwogowrwwgorwbgbwrbygrwrggborwggoyrgo   20  0m13.450
+boogwyrowwobrbygwywobbyrowyrrobgrggwyyrwowybbggoyrbrgg   20  0m13.401
+...
+ybgowbwrgwwyorgrbbborrybrggwgbwowygbgyrobroyooyyygroww   20  0m05.492
+boorwwwgwywrboyborgrogybbgwwboorbrrobyyygoygggwrwbygry   17  0m05.477
+ggywoybwrroorgrbrobbgwrwbbroyogbogywyoygwywogrbybygwrw   20  0m05.461
+bbyrwrbgwogrgoygwgyrgoywybgyyworbwwwrybggooobrwobbrryo   20  0m05.336
+bwrobyrbgybrorboyrbybygoywgywwgowygworwgyoobbgrwrwgorg   19  0m05.233
+
+      5 16  |
+     16 17  |
+     97 18  |
+    384 19  |
+    431 20  |
+     43 21  |
+
+

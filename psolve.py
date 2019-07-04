@@ -4,7 +4,7 @@ sin,cos= lambda z: math.sin(math.radians(z)), lambda z: math.cos(math.radians(z)
 
 isWinRelease= False
 models= ['cube223','cube222','cube333','cube444','cube555','pyraminx','skewb','cube333gear','ftoctahedron']
-allcolors= {} # colors dictionary {'cube333':{'R':[[0,0,255],[0,0,200],...],'G':[[0,255,0],...]}} 
+allcolors= {} # colors dictionary {'cube333':{'R':[[0,0,255],[0,0,200],...],'G':[[0,255,0],...]}}
 try: pkl= open('colors.pkl','rb'); allcolors= pickle.load(pkl); pkl.close()
 except: pass
 
@@ -436,16 +436,16 @@ class Algo:
 			f.write(f'#define REVCOL_TO "{self.revcol[1]}"\n')
 		for kn,kw in self.keywrd.items(): # stepHashDepth,stepStartDepth,stepMaxDepth,stepMaxWeights,stepSeq,...
 			f.write('int '+kw[0]+'[N_STEPS]={'
-				+ ','.join([ str(self.data[st][kn] if kn in self.data[st] else kw[1]) for st in sk ]) 
+				+ ','.join([ str(self.data[st][kn] if kn in self.data[st] else kw[1]) for st in sk ])
 				+ '};\n')
 		f.write('float stepParams[N_STEPS][N_MAX_PARAMS]={'
-			+ ','.join([ '{'+','.join(self.param[st])+'}' for st in sk ]) 
+			+ ','.join([ '{'+','.join(self.param[st])+'}' for st in sk ])
 			+ '};\n')
 		f.write('int nStepPruneSymmetry[N_STEPS][N_MAX_PRUNES]={{'
 			+ '},{'.join([ ','.join([ str(v) for v in self.symmetry[st].values() ]) for st in sk ])
 			+ '}};\n')
 		f.write('int nStepMasks[N_STEPS][N_MAX_PRUNES]={{'
-			+ '},{'.join([ ','.join([ str(len(ml)) for ml in self.mask[st].values() ]) for st in sk ]) 
+			+ '},{'.join([ ','.join([ str(len(ml)) for ml in self.mask[st].values() ]) for st in sk ])
 			+ '}};\n')
 		f.write('int stepMasks[N_STEPS][N_MAX_PRUNES][N_BLOCKS]={{'
 			+ '},{'.join([ '{'+'},{'.join([ ','.join([ str(m) for m in ml ]) for ml in self.mask[st].values() ])
@@ -465,7 +465,7 @@ class Algo:
 		f.write('uint8_t stepMoves[N_STEPS][N_MAX_MOVESETS][N_MAX_MS_MOVES][N_MOVES+1]={{'
 			+ '},{'.join([ '{'+'},{'.join([ '{'+'},{'.join([ str(len(mm))
 				+ ''.join([ ','+str(m) for m in mm ]) for mm in mmm])+'}' for mmm in self.moves[st] ])
-				+ '}' for st in sk ]) 
+				+ '}' for st in sk ])
 			+ '}};\n')
 		f.close()
 
@@ -551,12 +551,12 @@ class CubeModel:
 # modXX, camXX, mapXX - positions for models, camera and color map
 class MainScreen:
 	def __init__(self): # initialize screen and define all sizes for the main screen
-		monList= screeninfo.get_monitors() 
+		monList= screeninfo.get_monitors()
 		if len(monList)==0: print("Can't find any monitor"); exit(-2)
-		self.width, self.height = monList[0].width, monList[0].height; print('\nscreen size:', self.width, self.height)		
-		sSz= self.sSz= int(int(self.width)/100) # 
+		self.width, self.height = monList[0].width, monList[0].height; print('\nscreen size:', self.width, self.height)
+		sSz= self.sSz= int(int(self.width)/100) #
 		self.img= np.zeros((self.height,self.width,3), np.uint8); self.img[:]= (32,32,32); # drawing, fill background
-		self.mapimgS= self.mapimgV= None # colors maps for Saturation and Value in HSV model 
+		self.mapimgS= self.mapimgV= None # colors maps for Saturation and Value in HSV model
 		self.modX1, self.modY1, self.modY2 = sSz*2, sSz*2, 4*sSz+int((self.height-6*sSz)/2) # models position
 		self.modW, self.modH = int(self.width*0.3-4*sSz), int((self.height-6*sSz)/2) # models width and height
 		self.camX, self.camY1, self.camW = int(self.width*0.3), 2*sSz, int(self.width*0.4) # cam frame position
@@ -567,17 +567,17 @@ class MainScreen:
 		self.warning, self.preparing = False,True # warning in colors stats and preparing model flag
 		self.shown= False
 
-	def hide(self): 
-		if self.shown: 
+	def hide(self):
+		if self.shown:
 			cv2.destroyWindow("window"); self.shown= False
 	def show(self):
 		self.shown= True
 		cv2.namedWindow("window", cv2.WND_PROP_FULLSCREEN) # open main window in full-screen mode
-		cv2.setWindowProperty("window",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN) 
+		cv2.setWindowProperty("window",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
 		cv2.imshow("window", self.img); cv2.waitKey(33)
 
 	# put colored, multi-line text in the center of a rectangle
-	def putTextCenter(self, txt, xy, col=(255,255,255), fsz=None, w=0, h=0, fw=1, ff=cv2.FONT_HERSHEY_SIMPLEX): 
+	def putTextCenter(self, txt, xy, col=(255,255,255), fsz=None, w=0, h=0, fw=1, ff=cv2.FONT_HERSHEY_SIMPLEX):
 		sz= fsz if fsz else 0.5
 		lines= [ (re.split('&[0-9]',l), re.findall('&[0-9]',l)) for l in re.split('\n',txt) ] # text lines and blocks
 		carr= [col] if type(col)==tuple else col # initialize color array
@@ -637,13 +637,13 @@ class MainScreen:
 				f'{"&13&0 - contours mask is &1"+("on" if cm.showDefMask else "off")+"&0" if cm.followFrame else ""}\n'
 				f'&14&0 - solve random cube'
 				)
-		self.putTextCenter(txt, (self.camX, self.camY2+self.sSz*4),	[(128,128,128),(192,128,128),(32,32,32)], 
+		self.putTextCenter(txt, (self.camX, self.camY2+self.sSz*4),	[(128,128,128),(192,128,128),(32,32,32)],
 			w=self.camW, h=self.height-self.camY2-6*self.sSz)
 
 	def drawColorMap(self, cm, cam=None): # show color map and detected colors
 		img,cmap = self.img, cm.cmap
 		x0,y0,y1 = self.mapX, self.mapY+self.sSz, self.height-self.mapW-2*self.sSz # color circle position
-		d= self.mapW-3*self.sSz; r= d/2; dr= (d-1)/2 # color circle diameter and radius 
+		d= self.mapW-3*self.sSz; r= d/2; dr= (d-1)/2 # color circle diameter and radius
 		cv2.rectangle(img, (self.camX+self.camW,0), (self.width,self.height), (32,32,32), -1) # clear
 
 		ret= 0
@@ -664,7 +664,7 @@ class MainScreen:
 		srtCol= { x[0]:1 for x in sorted([[c,v] for c in cmap for v in cmap[c]], key=lambda z:z[1][0]) }.keys()
 		for i,c in enumerate(srtCol): # sorted colors by minimal hue
 			col= (255,255,255) if i%2==0 else (0,0,0) # current point-set color - black or white
-			xyS,xyV = ( list( 
+			xyS,xyV = ( list(
 				(int(r+r*p[j]*cos(p[0]*2)/256), int(r+r*p[j]*sin(p[0]*2)/256)) for p in cmap[c] ) for j in (1,2) )
 			if len(xyS)==0: continue
 			for j,xy in enumerate((xyS,xyV)):
@@ -673,7 +673,7 @@ class MainScreen:
 				xa,xb,ya,yb = (min(p[0] for p in xy), max(p[0] for p in xy), # bounding rectangle
 					min(p[1] for p in xy), max(p[1] for p in xy))
 				xc,yc = int((xb+xa)/2), int((yb+ya)/2) # bounding circle
-				rr= int(max( math.hypot(xc-p[0], yc-p[1]) for p in xy )+5) 
+				rr= int(max( math.hypot(xc-p[0], yc-p[1]) for p in xy )+5)
 				a= math.atan2(yc-dr,xc-dr)
 				r1= math.hypot(xc-dr,yc-dr)+rr
 				r2= max(r1+1, int(r+ self.sSz*(1 if i%2==0 else 5)//2))
@@ -708,7 +708,7 @@ class MainScreen:
 			self.putTextCenter('  '.join(csa), (x1,y1+sSz//2), [(128,128,128),(128,128,192)], w=self.camW, h=3*sSz//2)
 		if not isok and (maxface or self.warning): # if last face (trying to run solver)
 			if maxface: self.warning= True
-			scr.putTextCenter('something wrong with the colors, recheck', 
+			scr.putTextCenter('something wrong with the colors, recheck',
 				(x1,y1+2*sSz), (128,128,192), w=self.camW, h=3*sSz//2)
 		return isok
 
@@ -737,9 +737,9 @@ class MainScreen:
 					(0,0,0), 1, cv2.LINE_AA )
 				x+= w; i+= 1
 		if page==npages-1 or len(solution)==0: # solved cube as a final step
-			cm.mod3d.draw(cm, self, x, y, int(w*0.8), int(h*0.8), cmap=cm.defcol, showcam=False) 
+			cm.mod3d.draw(cm, self, x, y, int(w*0.8), int(h*0.8), cmap=cm.defcol, showcam=False)
 		if npages>1: # page navigator
-			self.putTextCenter('page '+str(page+1)+'/'+str(npages)+' use Left-Right arrows or page number 1,2,... to go through the pages', 
+			self.putTextCenter('page '+str(page+1)+'/'+str(npages)+' use Left-Right arrows or page number 1,2,... to go through the pages',
 				(self.width/2, self.height-0.5*y0), (80,80,80), fsz=0.9)
 		self.show()
 
@@ -764,7 +764,7 @@ class ProcessCam:
 
 	def saveColors(self, cm, updateMap=False): # save colors in the model and write updated color map to colors.pkl
 		for n in self.cols: # update model's colors
-			cm.sch2d.colors[n]= cm.mod3d.colors[n]= self.cols[n] 
+			cm.sch2d.colors[n]= cm.mod3d.colors[n]= self.cols[n]
 		if updateMap: # force update colors.pkl
 			for n,c in self.cols.items():
 				if c not in cm.cmap: cm.cmap[c]= []
@@ -781,10 +781,10 @@ class ProcessCam:
 		dist= lambda z: ( # my color distance not ideal but fast
 			(
 				 ( sin(tc[0]*2)*tc[1]*tc[2] - sin(z[0]*2)*z[1]*z[2] )**2
-				+( cos(tc[0]*2)*tc[1]*tc[2] - cos(z[0]*2)*z[1]*z[2] )**2 
+				+( cos(tc[0]*2)*tc[1]*tc[2] - cos(z[0]*2)*z[1]*z[2] )**2
 			)/255**2
-			+ ( tc[2]-z[2] )**2 
-		) 
+			+ ( tc[2]-z[2] )**2
+		)
 		# cncd - list 'R':100,'R':110,'G':120 - distances to the face colors
 		cncd= [ (cn,dist(c)) for cn,cl in cm.cmap.items() if face is None or not cm.facecol or cn in cm.facecol[face] for c in cl ]
 		return min( cncd, key=lambda z:z[1], default=[''] ) # best (color, min distance)
@@ -828,7 +828,7 @@ class ProcessCam:
 			bestw= None # bestw is maximum grid width in suitable maxd range
 			for X1,Y1 in XY1: # iterate candidates for grid from contours boundaries
 				for X2,Y2 in XY2: # then check that w/h ratio is close enough to model's
-					if X2-X1>ww*0.25 and Y2-Y1>hh*0.25 and abs((X2-X1)/(Y2-Y1)-(maxX-minX)/(maxY-minY))<0.05: 
+					if X2-X1>ww*0.25 and Y2-Y1>hh*0.25 and abs((X2-X1)/(Y2-Y1)-(maxX-minX)/(maxY-minY))<0.05:
 						_cf= ( (X2-X1)/(maxX-minX) + (Y2-Y1)/(maxY-minY) )/2 # a candidate is (X1,Y1)=>(X2,Y2)
 						maxd= None # maximum distance from face item to a map color
 						if cm.showDefMask: # green dots are projection of candidate rectangles
@@ -857,7 +857,7 @@ class ProcessCam:
 					_cf,_x0,_y0,cnt= e1[0],e1[1],e1[2],1 # average values counters
 					for j in range(0,len(self.asstack)-1-i): # e2 is from 0 position till e1
 						e2= self.asstack[j] # similar here means +-10% in each dimension, if so => add to average values counters
-						if e2 and abs((e1[0]-e2[0])/e1[0])<0.1 and abs((e1[1]-e2[1])/e1[1])<0.1 and abs((e1[2]-e2[2])/e1[2])<0.1: 
+						if e2 and abs((e1[0]-e2[0])/e1[0])<0.1 and abs((e1[1]-e2[1])/e1[1])<0.1 and abs((e1[2]-e2[2])/e1[2])<0.1:
 							_cf+= e2[0]; _x0+= e2[1]; _y0+= e2[2]; cnt+= 1
 					if cnt>2: cf,x0,y0 = _cf/cnt, _x0/cnt, _y0/cnt; break # we have 3 similar
 
@@ -877,7 +877,7 @@ class ProcessCam:
 				self.camP[n]= [ (x1+(x2-x1)*0.05+(p[0]-x1)*0.9, y1+(y2-y1)*0.05+(p[1]-y1)*0.9) for p in pp ]
 				camCP= [ np.array( self.camP[n], dtype=np.int32 ) ] # array to draw it on the mask
 				mask= np.zeros(self.frame.shape[:2], np.uint8) # define mask for the item
-				cv2.fillPoly(mask, camCP, 255); cv2.polylines(mask, camCP, 1, 0, thickness=2) 
+				cv2.fillPoly(mask, camCP, 255); cv2.polylines(mask, camCP, 1, 0, thickness=2)
 				self.avgBGR[n]= cv2.mean(self.frame, mask) # get average BGR color of the poly & save to show on bar
 				self.avgHSV[n]= cv2.cvtColor(np.array([[self.avgBGR[n]]],dtype=np.uint8), cv2.COLOR_BGR2HSV)[0][0]
 				self.cols[n]= '' if calibrate else self.nearlestColor(cm, self.avgHSV[n], face)[0] # nearest or clear
@@ -936,14 +936,14 @@ while True: # main loop - initialize detection of the cube and start reading col
 
 	c= None
 	if not cube: # if cube is not defined
-		face,cm.mode = 0,0, # current face; mode - find colors(=0) or calibration(=1); screen 
+		face,cm.mode = 0,0, # current face; mode - find colors(=0) or calibration(=1); screen
 		scr.warning,scr.preparing = False,True # inconsistent colors flag; model preparation flags
 		scr.img[:]= (32,32,32); scr.show() # clear screen
 		cm.sch2d.colors= cm.mod3d.colors= {n:'' for n in range(54,253)} if cm.file=='cube333gear' else {} # clear colors
 		scr.drawColorMap(cm); cam.findColors(cm, face); scr.drawCamFrame(cm, cam); scr.drawModels(cm) # show everything
 		cm.mod3d.draw(cm, scr, scr.modX1, scr.modY2+scr.modH-scr.modW, scr.modW, scr.modW, cm.defcol, start=True)
 		while not cm.mod3d.draw(cm, scr): # show origami cartoon
-			cam.getFrame(); cam.camP= {}; scr.drawCamFrame(cm, cam); cv2.imshow("window", scr.img); cv2.waitKey(1) 
+			cam.getFrame(); cam.camP= {}; scr.drawCamFrame(cm, cam); cv2.imshow("window", scr.img); cv2.waitKey(1)
 		scr.drawColorMap(cm); scr.drawModels(cm,face); scr.preparing= False # initialize screen objects
 
 		time0,frameCnt= datetime.datetime.now(), 0
@@ -979,11 +979,11 @@ while True: # main loop - initialize detection of the cube and start reading col
 						cam.saveColors(cm,True); scr.drawColorMap(cm)
 						face+= 1; scr.drawModels(cm,face); scr.showColorsStat(cm)
 						cm.mode= 0
-					else: 
+					else:
 						cam.cols[ cm.faces[face][colorIndex] ]= '?' # highlight next item
 				elif c==8 and colorIndex>0: # backspace - clear last color
 					cam.cols[cm.faces[face][colorIndex]]= ''
-					colorIndex-= 1; cam.cols[ cm.faces[face][colorIndex] ]= '?' 
+					colorIndex-= 1; cam.cols[ cm.faces[face][colorIndex] ]= '?'
 				elif c in (65535,3014656): cm.cmap.clear(); scr.drawColorMap(cm) # del - clear palette
 
 			frameCnt+= 1; time1= datetime.datetime.now(); time= (time1-time0).total_seconds()
@@ -997,30 +997,30 @@ while True: # main loop - initialize detection of the cube and start reading col
 
 	if c!=27: # colors are defined and not escape => run solver & show solution
 		if not cube: # build cube string with defined colors from the model
-			cube= ''.join([cm.sch2d.colors[c].lower() for c in sorted(cm.sch2d.colors.keys())]) 
+			cube= ''.join([cm.sch2d.colors[c].lower() for c in sorted(cm.sch2d.colors.keys())])
 		else:
 			for i,c in enumerate(cube): cm.mod3d.colors[i]= c.upper() # predefined cube - write colors to the model
 		print('cube=',cube,'\n')
 		if cm.file=='cube333gear':
 			for n in range(54,253): cm.mod3d.colors[n]= cm.sch2d.colors[n]= ''
-		page= 0; pagePos= { 0:cm.mod3d.colors.copy() } # current page and first 
+		page= 0; pagePos= { 0:cm.mod3d.colors.copy() } # current page and first
 		solPages= cm.algo.run(cm, scr, cube) # run solver and get paged solution
 
 		scr.showSolutionPage(cm, solPages[page] if len(solPages)>0 else [], page, len(solPages)) # first page
 		while True: # walk throw pages; wait for escape, then clear colors and start again
 			c= cv2.waitKeyEx(33)
-			if c==27: 
+			if c==27:
 				cube= file= filecmd= cm= None; break
 			elif c in (65361,65364,65366,2424832,2228224,2621440) and page>0: # left arrow - previous page
 				page-= 1; cm.mod3d.colors= pagePos[page].copy()
-				scr.showSolutionPage(cm, solPages[page], page, len(solPages)) 
+				scr.showSolutionPage(cm, solPages[page], page, len(solPages))
 			elif c in (65363,65362,65365,2162688,2490368,2555904) and page<len(solPages)-1: # right arrow - next page
 				page+= 1; pagePos[page]= cm.mod3d.colors.copy()
 				scr.showSolutionPage(cm, solPages[page], page, len(solPages))
 			elif ord('1')<=c and c<=ord('9'):
 				p= c-ord('1')
 				if p<len(solPages):
-					if p<page: 
+					if p<page:
 						page= p; cm.mod3d.colors= pagePos[page].copy()
 						scr.showSolutionPage(cm, solPages[page], page, len(solPages))
 					else:
