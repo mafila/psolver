@@ -50,7 +50,7 @@ If you have different colors you should change 'zero' and 'colors' sections of c
 
 ## console usage
 Puzzles codes: cube223, cube222, cube333, cube444, cube555, pyraminx, ftoctahedron, skewb, cube333gear.
-Colors order for cubes defined in corresponding cfg/\*.cr file for cubes it is FRBLUD
+Colors order is defined in corresponding cfg/\*.cr file. For cubes the order is FRBLUD
 ```
 ./psolve.py cube333
 ./psolve.py cube333 rand
