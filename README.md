@@ -55,7 +55,7 @@ Colors order is defined in corresponding cfg/\*.cr file. For cubes the order is 
 ./psolve.py cube333
 ./psolve.py cube333 rand
 ./psolve.py cube333 gbygbrwygogyyowrwgbobogbwgowoorrogybryrbwwwwbobygyryrr
-./psolve.py cube333 compiled
+./psolve.py cube333 compile
 bin/cube333 `bin/cube333 rand`
 bin/cube333 gbygbrwygogyyowrwgbobogbwgowoorrogybryrbwwwwbobygyryrr
 tst/run cube333 00 100
