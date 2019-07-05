@@ -46,3 +46,18 @@ Accurately place the face of the puzzle in the grid and press '1', then enter fa
 When the face is finished rotate puzzle as shown and enter colors for the next face.
 Continue until all colors are defined
 
+If you have different colors you should change 'zero' and 'colors' sections of corresponding cfg/\*.cr file
+
+## console usage
+Puzzles codes: cube223, cube222, cube333, cube444, cube555, pyraminx, ftoctahedron, skewb, cube333gear.
+Colors order for cubes defined in corresponding cfg/\*.cr file for cubes it is FRBLUD
+```
+./psolve.py cube333
+./psolve.py cube333 rand
+./psolve.py cube333 gbygbrwygogyyowrwgbobogbwgowoorrogybryrbwwwwbobygyryrr
+./psolve.py cube333 compiled
+bin/cube333 `bin/cube333 rand`
+bin/cube333 gbygbrwygogyyowrwgbobogbwgowoorrogybryrbwwwwbobygyryrr
+tst/run cube333 00 100
+tst/show cube333 00
+```
