@@ -70,14 +70,14 @@ Result depends on CPU frequency and number of cores, version of CPU AVX instruct
 calculation takes about 1 min.
 
 
-|CPU|Intel Core i7-4770 CPU @ 3.40GHz, 8 cores|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 8 cores|Intel Xeon Platinum 8124M CPU @ 3.00GHz, 36 cores|
-|:---:|:---:|:---:|:---:|
-|cube223| | |10.0|
-|cube222| | |8.7|
-|cube333| | | |
-|cube333gear| | | |
-|skewb| | |8.4|
-|pyraminx| | |10.4|
-|ftoctahedron| | | |
-|cube444|47.7|47.4| |
-|cube555|82.1|82.3| |
+|CPU|Intel Core i7-4770 CPU @ 3.40GHz, 8 cores|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 8 cores|Intel Xeon Platinum 8124M CPU @ 3.00GHz, 36 cores|Intel Atom CPU  C2350  @ 1.74GHz|
+|:---:|:---:|:---:|:---:|:---:|
+|cube223		|		|		|10.0	|		|
+|cube222		|		|		|8.7	|		|
+|cube333		|		|		|		|		|
+|cube333gear	|		|		|		|		|
+|skewb			|		|		|8.4	|		|
+|pyraminx		|		|		|10.4	|		|
+|ftoctahedron	|		|		|		|		|
+|cube444		|47.7	|47.4	|		|		|
+|cube555		|82.1	|82.3	|		|		|
