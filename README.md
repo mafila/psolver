@@ -75,6 +75,7 @@ The search for the solution takes about 1 min
 Face-turning Octahedron uses two-phase algorithm and also works for about 1 min
 
 Average move count based on 10000 runs for various CPU:
+
 |CPU|cube333|ftoctahedron|cube444|cube555|
 |:---:|:---:|:---:|:---:|:---:|
 |Intel Xeon Platinum 8124M @ 3.00GHz, 18 cores, 36 threads	|19.1|34.5|47.3|81.8|
