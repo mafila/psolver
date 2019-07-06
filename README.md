@@ -61,3 +61,12 @@ bin/cube333 gbygbrwygogyyowrwgbobogbwgowoorrogybryrbwwwwbobygyryrr
 tst/run cube333 00 100
 tst/show cube333 00
 ```
+
+## performance
+Simple puzzles (cube223, cube222, pyraminx, skewb and cube333gear) are solved in an optimal way.
+cube333 uses Kociemba's two-phase algorithm
+
+|CPU|cube444|cube555|
+|---|---|---|
+|Intel Core i7-4770 CPU @ 3.40GHz	|47.7 moves|82.1 moves|
+|Intel Xeon CPU E3-1270 V2 @ 3.50GHz|47.7 moves|82.3 moves|
