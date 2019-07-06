@@ -75,7 +75,8 @@ I didn't find any solvers for Face-turning Octahedron, so developed my own two-p
 
 |CPU|cube333|ftoctahedron|cube444|cube555|
 |:---:|:---:|:---:|:---:|:---:|
-|Intel Core i7-4770 CPU @ 3.40GHz, 4 cores, 8 threads			|19.3|35.5|47.7|82.1|
-|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 4 cores, 8 threads		|19.3|35.5|47.6|82.3|
-|Intel Xeon Platinum 8124M CPU @ 3.00GHz, 18 cores, 36 threads	|19.2|34.5|47.5|81.8|
-|Intel Atom CPU  C2350  @ 1.74GHz, 2 cores, 2 threads			|19.9|36.3|51.3|85.3|
+|Intel Xeon Platinum 8124M CPU @ 3.00GHz, 18 cores, 36 threads	|19.1|34.5|47.3|81.8|
+|Intel Core i7-4770 CPU @ 3.40GHz, 4 cores, 8 threads			|19.2|35.3|47.7|82.1|
+|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 4 cores, 8 threads		|19.3|35.6|47.6|82.3|
+|Intel(R) Core(TM) i7-7500U CPU @ 2.70GHz, 2 cores, 4 threads	|19.3|36.2|48.0|83.3|
+|Intel Atom CPU  C2350  @ 1.74GHz, 2 cores, 2 threads			|19.9|36.5|51.3|85.3|
