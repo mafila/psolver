@@ -72,7 +72,7 @@ cube444, cube555 uses several-phase algorithm, major know-how is in pairing edge
 Result depends on CPU frequency and number of cores, version of CPU AVX instructions and GCC version.
 The search for the solution takes about 1 min
 
-I didn't find any solvers for Face-turning Octahedron, so developed my own two-phase algorithm
+I didn't find any solvers for Face-turning Octahedron and developed own two-phase algorithm
 
 |CPU|cube333|ftoctahedron|cube444|cube555|
 |:---:|:---:|:---:|:---:|:---:|
