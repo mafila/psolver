@@ -64,7 +64,11 @@ tst/show cube333 00
 
 ## performance
 Simple puzzles (cube223, cube222, pyraminx, skewb and cube333gear) are solved in an optimal way.
-cube333 uses Kociemba's two-phase algorithm
+cube333 uses modified Kociemba's two-phase algorithm, it takes about 9 seconds.
+cube444, cube555 and ftoctahedron uses several-phase algorithm, major know-how is in pairing edges.
+Result depends on CPU frequency and number of cores, version of CPU AVX instructions and GCC version.
+calculation takes about 1 min.
+
 
 |CPU|Intel Core i7-4770 CPU @ 3.40GHz, 8 cores|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 8 cores|Intel Xeon Platinum 8124M CPU @ 3.00GHz, 36 cores|
 |---|---|---|---|
