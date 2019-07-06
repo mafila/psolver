@@ -77,7 +77,7 @@ Face-turning Octahedron uses two-phase algorithm and also works for about 1 min
 Average move count based on 10000 runs for various CPU:
 
 |CPU|cube333|ftoctahedron|cube444|cube555|
-|:---:|:---:|:---:|:---:|:---:|
+|:---|:---:|:---:|:---:|:---:|
 |Intel Xeon Platinum 8124M @ 3.00GHz, 18 cores, 36 threads	|19.1|34.5|47.3|81.8|
 |Intel Core i7-4770 @ 3.40GHz, 4 cores, 8 threads			|19.2|35.6|47.7|82.1|
 |Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 4 cores, 8 threads	|19.3|35.6|47.6|82.3|
