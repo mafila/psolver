@@ -552,7 +552,7 @@ class CubeModel:
 class MainScreen:
 	def __init__(self): # initialize screen and define all sizes for the main screen
 		monList= screeninfo.get_monitors()
-		if len(monList)==0: print("Can't find any monitor"); exit(-2)
+		if len(monList)==0: print("Can't find any monitor") #; exit(-2)
 		self.width, self.height = monList[0].width, monList[0].height; print('\nscreen size:', self.width, self.height)
 		sSz= self.sSz= int(int(self.width)/100) #
 		self.img= np.zeros((self.height,self.width,3), np.uint8); self.img[:]= (32,32,32); # drawing, fill background

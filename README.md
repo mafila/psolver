@@ -19,7 +19,7 @@ $ sudo apt update
 $ sudo apt upgrade
 $ python3 --version
 Python 3.6.8
-$ sudo apt install git python3-pip gcc make bc
+$ sudo apt install git python3-pip python3-opencv gcc make bc
 $ sudo -H python3 -m pip install numpy opencv-python screeninfo
 $ git clone https://github.com/mafila/psolver
 $ cd psolver
