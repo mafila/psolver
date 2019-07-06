@@ -73,9 +73,9 @@ The search for the solution takes about 1 min
 
 I didn't find any solvers for Face-turning Octahedron, so developed my own two-phase algorithm
 
-|CPU|Intel Core i7-4770 CPU @ 3.40GHz, 4 cores, 8 threads|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 4 cores, 8 threads|Intel Xeon Platinum 8124M CPU @ 3.00GHz, 18 cores, 36 threads|Intel Atom CPU  C2350  @ 1.74GHz, 2 cores|
+|CPU|Intel Core i7-4770 CPU @ 3.40GHz, 4 cores, 8 threads|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 4 cores, 8 threads|Intel Xeon Platinum 8124M CPU @ 3.00GHz, 18 cores, 36 threads|Intel Atom CPU  C2350  @ 1.74GHz, 2 cores, 2 threads|
 |:---:|:---:|:---:|:---:|:---:|
-|cube333		|19.3	|19.3	|19.3	|19.9	|
+|cube333		|19.3	|19.3	|19.2	|19.9	|
 |ftoctahedron	|36.3	|36.4	|36.1	|37.5	|
 |cube444		|47.7	|47.6	|47.5	|51.3	|
 |cube555		|82.1	|82.3	|81.8	|85.3	|
