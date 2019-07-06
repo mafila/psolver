@@ -71,7 +71,7 @@ calculation takes about 1 min.
 
 
 |CPU|Intel Core i7-4770 CPU @ 3.40GHz, 8 cores|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 8 cores|Intel Xeon Platinum 8124M CPU @ 3.00GHz, 36 cores|
-|---|---|---|---|
+|:---:|:---:|:---:|:---:|
 |cube223| | |10.0|
 |cube222| | |8.7|
 |cube333| | | |
