@@ -66,7 +66,8 @@ tst/show cube333 00
 Simple puzzles (cube223, cube222, pyraminx, skewb and cube333gear) are solved in an optimal way.
 cube333 uses Kociemba's two-phase algorithm
 
-|CPU|cube444|cube555|
-|---|---|---|
-|Intel Core i7-4770 CPU @ 3.40GHz	|47.7 moves|82.1 moves|
-|Intel Xeon CPU E3-1270 V2 @ 3.50GHz|47.7 moves|82.3 moves|
+|CPU|cube223|cube222|cube333|cube333gear|skewb|pyraminx|ftoctahedron|cube444|cube555|
+|---|---|---|---|---|---|---|---|---|---|
+|Intel Core i7-4770 CPU @ 3.40GHz, 8 cores| | | | | | | |47.7|82.1|
+|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 8 cores| | | | | | | |47.7|82.3|
+|Intel Xeon Platinum 8124M CPU @ 3.00GHz, 36 cores|10.0|8.7| |8.4|10.4| | | |
