@@ -64,7 +64,7 @@ tst/show cube333 00
 ```
 
 ## performance
-Simple puzzles (cube223, cube222, pyraminx, skewb and cube333gear) are solved in an optimal way
+Simple puzzles (cube223, cube222, pyraminx, skewb and cube333gear) are solved in an optimal way in several milliseconds
 
 cube333 uses modified Kociemba's two-phase algorithm, it takes about 9 seconds
 
