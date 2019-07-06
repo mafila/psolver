@@ -552,7 +552,7 @@ class CubeModel:
 class MainScreen:
 	def __init__(self): # initialize screen and define all sizes for the main screen
 		monList= screeninfo.get_monitors()
-		if len(monList)==0: print("Can't find any monitor") #; exit(-2)
+		if len(monList)==0: print("Can't find any monitor")
 		else:
 			self.width, self.height = monList[0].width, monList[0].height; print('\nscreen size:', self.width, self.height)
 			sSz= self.sSz= int(int(self.width)/100) #
@@ -750,12 +750,13 @@ class MainScreen:
 class ProcessCam:
 	def __init__(self): # initialize cam and calc sizes
 		self.cap= cv2.VideoCapture(0)
-		if not self.cap.isOpened(): print('Error: cannot open webcam'); exit(-3)
-		self.height=64 # cam image - Width x 64
-		self.camw, self.camh = self.cap.get(3), self.cap.get(4) # cam frame size
-		self.ratio= self.height/self.camh; self.width= int(self.camw*self.ratio)
-		self.ratio*= 2 # we will use centered 1/4 of the captured frame, so ratio is *2
-		self.asstack= [] # auto-detect solutions stack
+		if not self.cap.isOpened(): print('Error: cannot open webcam')
+		else:
+			self.height=64 # cam image - Width x 64
+			self.camw, self.camh = self.cap.get(3), self.cap.get(4) # cam frame size
+			self.ratio= self.height/self.camh; self.width= int(self.camw*self.ratio)
+			self.ratio*= 2 # we will use centered 1/4 of the captured frame, so ratio is *2
+			self.asstack= [] # auto-detect solutions stack
 
 	def getFrame(self): # capture cam frame
 		ret,frame= self.cap.read()
