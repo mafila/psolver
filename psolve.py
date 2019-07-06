@@ -553,19 +553,20 @@ class MainScreen:
 	def __init__(self): # initialize screen and define all sizes for the main screen
 		monList= screeninfo.get_monitors()
 		if len(monList)==0: print("Can't find any monitor") #; exit(-2)
-		self.width, self.height = monList[0].width, monList[0].height; print('\nscreen size:', self.width, self.height)
-		sSz= self.sSz= int(int(self.width)/100) #
-		self.img= np.zeros((self.height,self.width,3), np.uint8); self.img[:]= (32,32,32); # drawing, fill background
-		self.mapimgS= self.mapimgV= None # colors maps for Saturation and Value in HSV model
-		self.modX1, self.modY1, self.modY2 = sSz*2, sSz*2, 4*sSz+int((self.height-6*sSz)/2) # models position
-		self.modW, self.modH = int(self.width*0.3-4*sSz), int((self.height-6*sSz)/2) # models width and height
-		self.camX, self.camY1, self.camW = int(self.width*0.3), 2*sSz, int(self.width*0.4) # cam frame position
-		self.mapW, self.mapH = int(self.width*0.3-6*sSz), self.height-4*sSz # color map width and height
-		self.mapX, self.mapY = self.width-self.mapW-2*sSz, sSz*2 # color map position
-		self.perline, self.lines = 8,4 # solution sizes
-		#self.perline, self.lines = 2,2 # solution sizes
-		self.warning, self.preparing = False,True # warning in colors stats and preparing model flag
-		self.shown= False
+		else:
+			self.width, self.height = monList[0].width, monList[0].height; print('\nscreen size:', self.width, self.height)
+			sSz= self.sSz= int(int(self.width)/100) #
+			self.img= np.zeros((self.height,self.width,3), np.uint8); self.img[:]= (32,32,32); # drawing, fill background
+			self.mapimgS= self.mapimgV= None # colors maps for Saturation and Value in HSV model
+			self.modX1, self.modY1, self.modY2 = sSz*2, sSz*2, 4*sSz+int((self.height-6*sSz)/2) # models position
+			self.modW, self.modH = int(self.width*0.3-4*sSz), int((self.height-6*sSz)/2) # models width and height
+			self.camX, self.camY1, self.camW = int(self.width*0.3), 2*sSz, int(self.width*0.4) # cam frame position
+			self.mapW, self.mapH = int(self.width*0.3-6*sSz), self.height-4*sSz # color map width and height
+			self.mapX, self.mapY = self.width-self.mapW-2*sSz, sSz*2 # color map position
+			self.perline, self.lines = 8,4 # solution sizes
+			#self.perline, self.lines = 2,2 # solution sizes
+			self.warning, self.preparing = False,True # warning in colors stats and preparing model flag
+			self.shown= False
 
 	def hide(self):
 		if self.shown:
