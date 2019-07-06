@@ -4,6 +4,24 @@ CUB="$1"
 RUN="$2"
 CNT="$3"
 
+if [[ -z "$CUB" ]]; then
+echo
+echo "tst/run <PUZZLE> <TEST_CODE> <COUNT>"
+echo
+echo "<PUZZLE> is in the list cube223, cube222, cube333, cube444, cube555, pyraminx, skewb, cube333gear, ftoctahedron"
+echo "The puzzle should be compiled first with ./psolve.py <PUZZLE> compile"
+echo
+echo "<TEST_CODE> is an unique code for the test, could be empty. Previous results for the PUZZLE and TEST_CODE would be deleted"
+echo
+echo "<COUNT> number of runs for the test, coule be empty"
+echo
+echo "Examples:"
+echo "tst/run cube222 00 10000"
+echo "tst/run cube333 mytest 1000"
+echo "tst/run cube555"
+echo "tst/show cube555"
+exit
+fi
 if [[ "$RUN" ]]; then RUN=".${RUN}"; fi
 if [[ -z "$CNT" ]]; then CNT=1000; fi
 
