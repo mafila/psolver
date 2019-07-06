@@ -42,7 +42,8 @@ Connected web camera required for this application
 
 Choose the puzzle by pressing key '1'-'9'.
 On the first run you need to calibrate colors for your puzzle.
-Accurately place the face of the puzzle in the grid and press '1', then enter face colors one by one by pressing corresponding key ('r' for red, 'w' for white, etc).
+Accurately place the face of the puzzle in the grid and press '1', then enter face colors one by one
+by pressing corresponding key ('r' for red, 'w' for white, etc).
 When the face is finished rotate puzzle as shown and enter colors for the next face.
 Continue until all colors are defined
 
@@ -77,6 +78,6 @@ I didn't find any solvers for Face-turning Octahedron, so developed my own two-p
 |:---:|:---:|:---:|:---:|:---:|
 |Intel Xeon Platinum 8124M CPU @ 3.00GHz, 18 cores, 36 threads	|19.1|34.5|47.3|81.8|
 |Intel Core i7-4770 CPU @ 3.40GHz, 4 cores, 8 threads			|19.2|35.6|47.7|82.1|
-|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 4 cores, 8 threads		|19.3|35.4|47.6|82.3|
+|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 4 cores, 8 threads		|19.3|35.6|47.6|82.3|
 |Intel(R) Core(TM) i7-7500U CPU @ 2.70GHz, 2 cores, 4 threads	|19.3|36.2|48.0|83.3|
-|Intel Atom CPU  C2350  @ 1.74GHz, 2 cores, 2 threads			|19.9|36.6|51.3|85.3|
+|Intel Atom CPU  C2350  @ 1.74GHz, 2 cores, 2 threads			|19.6|36.6|51.3|85.3|
