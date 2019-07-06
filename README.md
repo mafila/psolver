@@ -67,9 +67,11 @@ Simple puzzles (cube223, cube222, pyraminx, skewb and cube333gear) are solved in
 
 cube333 uses modified Kociemba's two-phase algorithm, it takes about 9 seconds
 
-cube444, cube555 and ftoctahedron uses several-phase algorithm, major know-how is in pairing edges.
+cube444, cube555 uses several-phase algorithm, major know-how is in pairing edges.
 Result depends on CPU frequency and number of cores, version of CPU AVX instructions and GCC version.
-The search of the solution takes about 1 min
+The search for the solution takes about 1 min
+
+I didn't find any solvers for Face-turning Octahedron, so developed my own two-phase algorithm
 
 |CPU|Intel Core i7-4770 CPU @ 3.40GHz, 4 cores, 8 threads|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 4 cores, 8 threads|Intel Xeon Platinum 8124M CPU @ 3.00GHz, 18 cores, 36 threads|Intel Atom CPU  C2350  @ 1.74GHz, 2 cores|
 |:---:|:---:|:---:|:---:|:---:|
@@ -80,5 +82,5 @@ The search of the solution takes about 1 min
 |skewb			|		|		|8.4	|		|
 |pyraminx		|		|		|10.4	|		|
 |ftoctahedron	|		|		|		|		|
-|cube444		|47.7	|47.6	|		|		|
-|cube555		|82.1	|82.3	|		|		|
+|cube444		|47.7	|47.6	|47.5	|		|
+|cube555		|82.1	|82.3	|81.8	|		|
