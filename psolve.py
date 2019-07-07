@@ -740,7 +740,7 @@ class MainScreen:
 		if page==npages-1 or len(solution)==0: # solved cube as a final step
 			cm.mod3d.draw(cm, self, x, y, int(w*0.8), int(h*0.8), cmap=cm.defcol, showcam=False)
 		if npages>1: # page navigator
-			self.putTextCenter('page '+str(page+1)+'/'+str(npages)+' use Left-Right arrows or page number 1,2,... to go through the pages',
+			self.putTextCenter('page '+str(page+1)+'/'+str(npages)+' use Left-Right arrows or 9,0 or page number 1,2,... to go through the pages',
 				(self.width/2, self.height-0.5*y0), (80,80,80), fsz=0.9)
 		self.show()
 
@@ -1013,10 +1013,10 @@ while True: # main loop - initialize detection of the cube and start reading col
 			c= cv2.waitKeyEx(33)
 			if c==27:
 				cube= file= filecmd= cm= None; break
-			elif c in (65361,65364,65366,2424832,2228224,2621440) and page>0: # left arrow - previous page
+			elif c in (65361,65364,65366,2424832,2228224,2621440,57) and page>0: # left arrow - previous page
 				page-= 1; cm.mod3d.colors= pagePos[page].copy()
 				scr.showSolutionPage(cm, solPages[page], page, len(solPages))
-			elif c in (65363,65362,65365,2162688,2490368,2555904) and page<len(solPages)-1: # right arrow - next page
+			elif c in (65363,65362,65365,2162688,2490368,2555904,48) and page<len(solPages)-1: # right arrow - next page
 				page+= 1; pagePos[page]= cm.mod3d.colors.copy()
 				scr.showSolutionPage(cm, solPages[page], page, len(solPages))
 			elif ord('1')<=c and c<=ord('9'):
