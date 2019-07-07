@@ -1,10 +1,10 @@
 # psolver
 9 puzzle solver detects puzzle state from connected camera and solves the puzzle:
 - Rubik's 2x2x3 (Tower Cube)
-- Rubik's 2x2x2
+- Rubik's 2x2x2 (Pocket Cube)
 - Rubik's 3x3x3
-- Rubik's 4x4x4
-- Rubik's 5x5x5
+- Rubik's 4x4x4 (Rubik's Revenge)
+- Rubik's 5x5x5 (Professor's Cube)
 - Pyraminx
 - Skewb
 - 3x3x3 Gear Cube
