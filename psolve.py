@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import numpy as np, subprocess as sp, cv2, re, os, glob, sys, math, datetime, threading, hashlib, copy, screeninfo, pickle
+import numpy as np, subprocess as sp, cv2, re, os, glob, sys, math, datetime, hashlib, copy, screeninfo, pickle
 sin,cos= lambda z: math.sin(math.radians(z)), lambda z: math.cos(math.radians(z)) # sin,cos in degrees
 
 isWinRelease= False

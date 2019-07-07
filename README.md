@@ -71,15 +71,15 @@ cube333 uses modified Kociemba's two-phase algorithm, it takes about 9 seconds
 cube444, cube555 uses several-phase algorithm, major know-how is in pairing edges.
 The search for the solution takes about 1 min
 
-Face-turning Octahedron works for about 1 min
+Face-turning Octahedron also works about 1 min
 
 Result depends on CPU frequency and number of cores, version of CPU AVX instructions and GCC version.
 Average move count based on 10000 runs for various CPU:
 
 |CPU|cube333|ftoctahedron|cube444|cube555|
 |:---|:---:|:---:|:---:|:---:|
-|Intel Xeon Platinum 8124M @ 3.00GHz, 18 cores, 36 threads	|19.1|34.5|47.3|81.7|
-|Intel Core i7-4770 @ 3.40GHz, 4 cores, 8 threads			|19.2|35.6|47.7|82.1|
+|Intel Xeon Platinum 8124M @ 3.00GHz, 18 cores, 36 threads	|19.0|34.6|47.3|81.4|
+|Intel Core i7-4770 @ 3.40GHz, 4 cores, 8 threads			|19.2|35.5|47.7|82.1|
 |Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 4 cores, 8 threads	|19.3|35.5|47.6|82.3|
 |Intel Core i7-7500U @ 2.70GHz, 2 cores, 4 threads			|19.3|36.2|48.0|83.2|
 |Intel Atom CPU  C2350  @ 1.74GHz, 2 cores, 2 threads		|19.6|36.9|51.3|85.3|

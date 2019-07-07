@@ -17,7 +17,7 @@ echo "<COUNT> number of runs for the test, coule be empty"
 echo
 echo "Examples:"
 echo "tst/run cube222 00 10000"
-echo "tst/run cube333 mytest 1000"
+echo "tst/run cube333 mytest 100"
 echo "tst/run cube555"
 echo "tst/show cube555"
 exit
