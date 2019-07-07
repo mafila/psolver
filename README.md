@@ -1,13 +1,13 @@
 # psolver
 9 puzzle solver detects puzzle state from connected camera and solves the puzzle:
-- Rubik's 2x2x3
+- Rubik's 2x2x3 (Tower Cube)
 - Rubik's 2x2x2
 - Rubik's 3x3x3
 - Rubik's 4x4x4
 - Rubik's 5x5x5
 - Pyraminx
 - Skewb
-- 3x3x3 gear
+- 3x3x3 Gear Cube
 - Face-turning Octahedron
 
 ## installation
