@@ -34,8 +34,8 @@ moves
 	6:LU:7,6/t0,t0,t0,$0,t0/23-1,22-23,7-22						7:LU':6,7/$6,$6/22-7,23-22,1-23
 
 zero
-	rrrrrbbbbbpppppgggggoooooyyyyy	
-#	rrrrrbbbbbooooogggggdddddyyyyy
+#	rrrrrbbbbbpppppgggggoooooyyyyy	
+	rrrrrbbbbbooooogggggdddddyyyyy
 
 faces
 	0:0-4 *0,-180,0/0-4/0,0,2
@@ -46,5 +46,5 @@ faces
 	5:25-29 *90,-540,0/25-29/0,2,0
 
 colors
-	R:(64,64,255):red G:(64,160,64):green B:(255,64,64):blue O:(64,128,255):orange Y:(0,200,255):yellow P:(255,0,255):purple
-#	R:(64,64,255):red G:(64,160,64):green B:(255,64,64):blue O:(64,128,255):orange Y:(0,200,255):yellow D:(0,0,0):darkblack
+#	R:(64,64,255):red G:(64,160,64):green B:(255,64,64):blue O:(64,128,255):orange Y:(0,200,255):yellow P:(255,0,255):purple
+	R:(64,64,255):red G:(64,160,64):green B:(255,64,64):blue O:(64,128,255):orange Y:(0,200,255):yellow D:(0,0,0):darkblack
