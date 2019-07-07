@@ -49,6 +49,8 @@ Continue until all colors are defined
 
 If you have different colors you should change 'zero' and 'colors' sections of corresponding cfg/\*.cr file
 
+![sample](https://raw.githubusercontent.com/mafila/psolver/master/sample.png)
+
 ## console usage
 Puzzles codes: cube223, cube222, cube333, cube444, cube555, pyraminx, ftoctahedron, skewb, cube333gear.
 Colors order is defined in corresponding cfg/\*.cr file. For cubes the order is FRBLUD
@@ -66,7 +68,7 @@ tst/show cube333 00
 ## performance
 Simple puzzles (cube223, cube222, pyraminx, skewb and cube333gear) are solved in an optimal way in several milliseconds
 
-cube333 uses modified Kociemba's two-phase algorithm, it takes about 9 seconds
+cube333 uses modified Kociemba's two-phase algorithm, it takes about 7 seconds
 
 cube444, cube555 uses several-phase algorithm, major know-how is in pairing edges.
 The search for the solution takes about 1 min
