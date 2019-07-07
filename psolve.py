@@ -913,7 +913,7 @@ class ProcessCam:
 #
 file, filecmd = sys.argv[1] if len(sys.argv)>1 else None, sys.argv[2] if len(sys.argv)>2 else None
 scr, cam = MainScreen(), ProcessCam() # screen and cam objects
-print('model='+file if file else 'None', 'command='+filecmd if filecmd else 'None')
+print('model='+(file if file else 'None'), 'command='+(filecmd if filecmd else 'None'))
 cm= CubeModel(file) if file else None # current model if defined
 
 while True: # main loop - initialize detection of the cube and start reading colors
