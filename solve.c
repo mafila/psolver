@@ -26,7 +26,7 @@ int step, inSeq, linkStep, linkSol, solutionFound // current step, sequence flag
 uint8_t *amoves0, *amoves1 // allowed moves for the current step and step's last move
 ,	stepSol[N_STEPS][N_MAX_SOL][N_MAX_MOVES+1] // list of solutions for the step
 ,	moveList[N_MAX_MOVES], nMoves= 0; // main list of moves
-char revColor[256]= {}; // reverse colors (like F to B, U to D, R to L)
+char revColor[256]= {}, normColor[256]= {}; // reverse colors (F to B, U to D, R to L) and normal (face index)
 CUBE cube0; // start cube to solve
 
 
@@ -190,13 +190,13 @@ uint32_t *pruneCnt;
 
 static inline uint32_t hashFromMask(char *s0, int prunei) { // called from prune.h, useMask flag in .cr file
 	int n; // string length (mask or full)
-	char *s, s1[N_BLOCKS]; // pointer to the packed cube string; temporary buffer to store packed string
+	char s[N_BLOCKS]; // pointer to the packed cube string
 	uint32_t hash= 0;
-	if ((n= nStepMasks[step][prunei])) { // mask is not empty - repack
-		s= s1; for(int j=0; j<n; j++) s[j]= s0[ stepMasks[step][prunei][j] ];
-	}else{ // mask is empty - use full cube length and string
-		n= N_BLOCKS; s= s0;
-	}
+	if ((n= nStepMasks[step][prunei])) // mask is not empty - repack
+		for(int j=0; j<n; j++) s[j]= normColor[s0[ stepMasks[step][prunei][j] ]];
+	else // mask is empty - use full cube length and string
+		for(int j=0; j<(n=N_BLOCKS); j++) s[j]= normColor[s0[j]];
+
 	for(int i=0; i<n; i++) hash= s[i] + hash*65599u; // fast hash function
 	return hash & (stepPruneSize[step][prunei]-1); // use bit mask length defined .cr file
 }
@@ -951,6 +951,7 @@ int main(int argc,char *argv[]) {
 			for(k=0,z=0; k<nFaces; k++,z+=faceLen[k]) if (revColInd[i][j]==k) { revColInd[i][j]= z; break; }
 		for(i=0; i<256; i++) revColor[i]= (char)i;
 		for(i=0; i<nRevCol; i++) revColor[(int)zeroCube[ revColInd[i][0]] ]= zeroCube[ revColInd[i][1] ];
+		for(x=0,k=0; x<nFaces; x++) for(y=0; y<faceLen[x]; y++,k++) normColor[zeroCube[k]]= x;
 		printf("zero %.*s\n", (int)strlen(zeroCube), zeroCube);
 	}
 
