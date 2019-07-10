@@ -49,7 +49,7 @@ moves
 
 algo
 	hash_depth=7
-	p:useMask bits=26 withSymmetry
+	p:useMask bits=24 withSymmetry
 
 faces
 	0:0-8 *0,-180,0*-90,-180,0/0-8/0,-2,0

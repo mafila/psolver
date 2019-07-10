@@ -42,8 +42,8 @@ Connected web camera required for this application
 
 Choose the puzzle by pressing key '1'-'9'.
 On the first run you need to choose and calibrate colors for your puzzle.
-Accurately place the face of the puzzle in the grid and press '1', then enter colors of your puzzle ('r' for red, 'w' for white, etc).
-After the colors are set enter face colors one by one by pressing corresponding key.
+Accurately place the face of the puzzle in the grid and press '1', then enter unique colors of your puzzle ('r' for red, 'w' for white, etc).
+After the unique colors are set enter face colors one by one by pressing corresponding key.
 When the face is finished rotate puzzle as shown and enter colors for the next face.
 Continue until all colors are defined
 
