@@ -41,26 +41,26 @@ $ python3 psolver.py
 Connected web camera required for this application
 
 Choose the puzzle by pressing key '1'-'9'.
-On the first run you need to calibrate colors for your puzzle.
-Accurately place the face of the puzzle in the grid and press '1', then enter face colors one by one
-by pressing corresponding key ('r' for red, 'w' for white, etc).
+On the first run you need to choose and calibrate colors for your puzzle.
+Accurately place the face of the puzzle in the grid and press '1', then enter colors of your puzzle ('r' for red, 'w' for white, etc).
+After the colors are set enter face colors one by one by pressing corresponding key.
 When the face is finished rotate puzzle as shown and enter colors for the next face.
 Continue until all colors are defined
-
-If you have different colors you should change 'zero' and 'colors' sections of corresponding cfg/\*.cr file
 
 ![sample](https://raw.githubusercontent.com/mafila/psolver/master/sample.png)
 
 ## console usage
 Puzzles codes: cube223, cube222, cube333, cube444, cube555, pyraminx, ftoctahedron, skewb, cube333gear.
-Colors order is defined in corresponding cfg/\*.cr file. For cubes the order is FRBLUD
+Colors order is defined in corresponding cfg/\*.cr file. For cubes the order is UFRBLD
 ```
 ./psolve.py cube333
 ./psolve.py cube333 rand
-./psolve.py cube333 gbygbrwygogyyowrwgbobogbwgowoorrogybryrbwwwwbobygyryrr
+./psolve.py cube333 yyrwrwwyogbwowroyobobbgwgrgwrbgyywbyrboobgggbygyrowror
+./psolve.py cube444 URFDLB RBFDDDLDUBFBRRFLBUBFRFDLURBDUUULFDDUFDRFRULFLFRRURDBLUUFBUFLDLRBDLRUBDBLBFBUBLFFLDUFULRLBRLRDBDR
+./psolve.py cube555 compile
+bin/cube555 `bin/cube555 rand`
 ./psolve.py cube333 compile
-bin/cube333 `bin/cube333 rand`
-bin/cube333 gbygbrwygogyyowrwgbobogbwgowoorrogybryrbwwwwbobygyryrr
+bin/cube333 yyrwrwwyogbwowroyobobbgwgrgwrbgyywbyrboobgggbygyrowror
 tst/run cube333 00 100
 tst/show cube333 00
 ```
@@ -80,8 +80,8 @@ Average move count based on 10000 runs for various CPU:
 
 |CPU|cube333|ftoctahedron|cube444|cube555|
 |:---|:---:|:---:|:---:|:---:|
-|Intel Xeon Platinum 8124M @ 3.00GHz, 18 cores, 36 threads	|19.0|34.6|47.3|81.4|
-|Intel Core i7-4770 @ 3.40GHz, 4 cores, 8 threads			|19.2|35.5|47.7|82.1|
-|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 4 cores, 8 threads	|19.3|35.5|47.6|82.3|
-|Intel Core i7-7500U @ 2.70GHz, 2 cores, 4 threads			|19.3|36.2|48.0|83.2|
-|Intel Atom CPU  C2350  @ 1.74GHz, 2 cores, 2 threads		|19.6|36.9|51.3|85.3|
+|Intel Xeon Platinum 8124M @ 3.00GHz, 18 cores, 36 threads	|19.1|34.5|47.5|81.4|
+|Intel Core i7-4770 @ 3.40GHz, 4 cores, 8 threads			|19.2|35.2|47.6|82.1|
+|Intel Xeon CPU E3-1270 V2 @ 3.50GHz, 4 cores, 8 threads	|19.2|35.2|47.6|82.3|
+|Intel Core i7-7500U @ 2.70GHz, 2 cores, 4 threads			|19.3|35.9|48.2|83.2|
+|Intel Atom CPU  C2350  @ 1.74GHz, 2 cores, 2 threads		|19.6|36.5|51.2|85.3|

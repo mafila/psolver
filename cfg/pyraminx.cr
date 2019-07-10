@@ -44,7 +44,5 @@ algo
 		moves= 0-7
 
 zero
+	corners: 0,18,9 4,27,26 13,31,8 35,17,22
 	rrrrrrrrrbbbbbbbbboooooooooggggggggg
-
-colors
-	R:(0,0,255):red G:(64,160,64):green O:(0,106,255):orange B:(0,0,0):black

@@ -42,6 +42,11 @@ AVGML=`cat ${C}${V}.test|awk '
 {	n=split($3,a,","); if(a[1]>0) for(i=1;i<=n;i++) { c[i]++; s[i]+=a[i] }	}
 END{	printf("avg= %6.3f / %1.3f /",s[1]/c[1],s[2]/c[2]); for(i=3;i<=n;i++) printf("/ %6.3f ",s[i]/c[i]); printf("moves")	}'`
 
+MAXML=`cat ${C}${V}.test|awk '
+{       n=split($3,a,","); if(a[1]>0) for(i=1;i<=n;i++) if (a[i]>s[i]) s[i]=a[i]; }
+END{    printf("max=                /"); for(i=3;i<=n;i++) printf("/ %6.0f ",s[i]); printf("moves")     }'`
+
+
 AVGTL=`cat ${C}${V}.test|awk '
 {	n=split($4,a,","); for(i=1;i<=n;i++) { c[i]++; s[i]+=a[i] }	}
 END{	printf("avg=                /"); for(i=3;i<=n;i++) printf("/ %6.3f ",s[i]/c[i]/1000); printf("sec")	}'`
@@ -53,6 +58,7 @@ fi
 
 echo `date +'%D %T'` "|" "${C}${V}" "|" "$CNT" "|" "$AVGM" "|" "$AVGT" > .tstshowtmp
 echo "$AVGML" >> .tstshowtmp
+echo "$MAXML" >> .tstshowtmp
 echo "$AVGTL" >> .tstshowtmp
 echo >> .tstshowtmp
 

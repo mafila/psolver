@@ -3,11 +3,14 @@ import numpy as np, subprocess as sp, cv2, re, os, glob, sys, math, datetime, ha
 sin,cos= lambda z: math.sin(math.radians(z)), lambda z: math.cos(math.radians(z)) # sin,cos in degrees
 
 isWinRelease= False
+colorList= 'rgboywcpdsa'
+defCol= { 'r':(32,32,255), 'g':(64,160,64), 'b':(255,64,64), 'o':(64,128,255), 'y':(0,200,255), 'w':(224,224,224),
+	'c':(176,176,255), 'p':(255,0,255), 'd':(0,0,0), 's':(128,128,128), 'a':(255,255,0) }
+colName= { 'r':'red', 'g':'green', 'b':'blue', 'o':'orange', 'y':'yellow', 'w':'white',
+	'c':'coral', 'p':'purple', 'd':'darkblack', 's':'silver', 'a':'aqua' }
 models= ['cube223','cube222','cube333','cube444','cube555','pyraminx','skewb','cube333gear','ftoctahedron']
-allcolors= {} # colors dictionary {'cube333':{'R':[[0,0,255],[0,0,200],...],'G':[[0,255,0],...]}}
 try: pkl= open('colors.pkl','rb'); allcolors= pickle.load(pkl); pkl.close()
-except: pass
-
+except: allcolors= {}  # colors dictionary {'cube333':{cmap:{'R':[[0,0,255],[0,0,200],...],...]}},cset:['r','g',...]}
 
 # Cube on plane
 # self.poly - dictionary of lists with points for each item
@@ -94,7 +97,7 @@ class Model:
 		r= r'([\d-]+):([\d\-\,]+){0,1}(\:([a-z]+)){0,1}(\s+((\*[\d\-\.\s,]+){1,})/([^/]+)/([^/]+)){0,1}'
 		for b in re.findall(r, line):
 			n= int(b[0]) # face number
-			if b[2]: cm.facecol[n]= set(b[3].upper()) # colors allowed for the face
+			if b[2]: cm.facecol[n]= set(b[3]) # colors allowed for the face
 			for a in re.findall(r'(\d+)-(\d+)', b[1]): cm.faces[n]= range(int(a[0]), int(a[1])+1) # 0-8
 			if b[4]: # *180,0,0*0,90,0/0-5;6-12/0,0,1;1,0,0=>[[(180,0,0),(0,90,0)],None,((0-5,(0,0,1)),(6-12,(1,0,0)))]
 				self.faces[n]= (
@@ -306,6 +309,7 @@ class Transform:
 # self.weight - dictionary of steps with weight formula for the step
 # self.moves - dictionary of steps with the list of allowed moves
 # self.keywrd - keywords to parse and process data values
+# self.corners,self.corder - list or corners as triplets or quartets and their faces
 # self.revcol - defines reverse colors, colors on opposite side
 # self.n - number of current step
 class Algo:
@@ -316,7 +320,7 @@ class Algo:
 			'max_depth':('stepMaxDepth',255), 'max_weight':('stepMaxWeights',0), 'seq':('stepSeq',0),
 			'max_sol':('stepMaxSol',1), 'sol_time':('solTime',0), 'sol_time_hard':('solTimeHard',0),
 			'step_time':('stepTime',0), 'link_step':('stepLink',-1), 'link_step_local':('stepLinkLocal',0) }
-		self.revcol= []; self.n= 0
+		self.corners,self.corder = [],[]; self.revcol= {}; self.n= 0
 
 	def parseLine(self, line, cm=None): # parse the line of the algorithm with step=self.n
 		for a in re.findall( r'(^|\s)(\d+)\:', line ): # new step, like '1:'
@@ -419,7 +423,6 @@ class Algo:
 		f.close()
 
 		f= open('include/data.h','w')
-		f.write(f'#define ZERO_CUBE "{cm.zero}"\n') # zero cube definition
 		f.write(f'#define N_STEPS {len(self.data.keys())}\n') # number of algo steps
 		nblk= 1+max([ z for y in [x.keys() for x in cm.moves.moves.values()] for z in y ])
 		f.write(f'#define N_BLOCKS {nblk}\n') # number of blocks = max item in moves
@@ -431,9 +434,14 @@ class Algo:
 		f.write(f'#define N_MAX_MOVESETS {max([ len(self.moves[st]) for st in sk ])}\n')
 		f.write(f'#define N_MAX_PRUNES {max([ len(self.prune[st].keys()) for st in sk ]+[1])}\n')
 		f.write(f'#define N_MAX_PARAMS {max(16,max([ len(self.param[st]) for st in sk ]))}\n')
-		if self.revcol: # reverse colors like yog-wrb
-			f.write(f'#define REVCOL_FROM "{self.revcol[0]}"\n')
-			f.write(f'#define REVCOL_TO "{self.revcol[1]}"\n')
+		f.write(f'char zeroCube[N_BLOCKS+1]="{cm.zero}";\n') # zero cube definition
+		f.write(f'int nFaces={len(cm.faces)};\n') # number of corners and corners list
+		f.write('int faceLen[]={'+','.join([str(len(cm.faces[f])) for f in sorted(cm.faces.keys())])+'};\n')
+		f.write(f'int nCorners={len(self.corners)}, corLen={len(self.corners[0]) if len(self.corners)>0 else 0};\n')
+		f.write('int corners[8][4]={'+','.join([ '{'+','.join(k)+'}' for k in self.corners ])+'};\n')
+		f.write('int corder[8][4]={'+','.join([ '{'+','.join(k)+'}' for k in self.corder ])+'};\n')
+		f.write(f'int nRevCol={len(self.revcol)};\n')
+		f.write(f'int revColInd[][2]={{{ ",".join("{%s,%s}"%(k,v) for k,v in self.revcol.items()) }}};\n')
 		for kn,kw in self.keywrd.items(): # stepHashDepth,stepStartDepth,stepMaxDepth,stepMaxWeights,stepSeq,...
 			f.write('int '+kw[0]+'[N_STEPS]={'
 				+ ','.join([ str(self.data[st][kn] if kn in self.data[st] else kw[1]) for st in sk ])
@@ -506,7 +514,8 @@ class Algo:
 
 
 # Model of the cube. Read .cr file and store all the data
-# self.sch2d,self.mod3d,self.turns,self.moves,self.algo,self.zero,self.faces,self.defcol,self.cmap - data from .cr file
+# self.sch2d, self.mod3d, self.turns, self.moves, self.algo, self.faces, self.facecol, self.zero - data from .cr file
+# self.cmap, self.cset - color map and color set
 class CubeModel:
 	def __init__(self, file): # Read the file with cube model
 		self.file= file; print(f'\nloading {file}');  # initialize data structured before loading cube model
@@ -514,8 +523,9 @@ class CubeModel:
 		self.sch2d,self.mod3d= Scheme(),None
 		self.turns,self.moves= Transform('turns'),Transform('moves')
 		self.algo= Algo()
-		self.faces,self.defcol,self.facecol,self.colname = {},{},{},{}
-		self.cmap= allcolors[self.algname]= allcolors[self.algname] if self.algname in allcolors else {}
+		self.faces,self.facecol = {},{}
+		if self.algname not in allcolors: allcolors[self.algname]= { 'cmap':{}, 'cset':[] }
+		self.cmap,self.cset = allcolors[self.algname]['cmap'], allcolors[self.algname]['cset']
 		mode= -1 # currend state: scheme2d, model3d, algo, etc
 		for line in [x.rstrip() for x in open(f'cfg/{file}.cr')]: # iterate file line by line and search for patterns
 			line= re.sub(r'\s+',' ',line.strip()) # strip and raplace all whitespaces with tab
@@ -527,19 +537,18 @@ class CubeModel:
 			elif line=='moves': sys.stdout.write(' '+line); cur= self.moves; cur.n= len(self.sch2d.poly); mode= 0
 			elif line=='zero': sys.stdout.write(' '+line); mode= 2
 			elif line=='faces': sys.stdout.write(' '+line); mode= 3
-			elif line=='colors': sys.stdout.write(' '+line); mode= 4
 			elif line!='':
 				if mode in (0,1): cur.parseLine(line, self) # Scheme, Transform or Algo
-				elif mode==2: # reverse colors and zero cube string
-					for a in re.findall( r'reverse:\s*([a-z]+)-([a-z]+)', line): # reverse: rbogwy-ogrbyw
-						if a[0]: self.algo.revcol= [a[0],a[1]]
-					else: self.zero= line # zero cube string
-				elif mode==3:
-					self.mod3d.parseFacesLine(line, self) # faces in 3d model
-				elif mode==4: # read default colors in BGR
-					for a in re.findall( r'([A-Z])\:\((\d+),(\d+),(\d+)\)(:([^\s]+)){0,1}',line ): # R:(255,0,0):red
-						self.defcol[a[0]]= (int(a[1]),int(a[2]),int(a[3]))
-						self.colname[a[0]]= a[5] if a[5] else f'color {a[0]}'
+				elif mode==2: # corners and zero cube string
+					for a in re.findall( r'corners:\s*([\d\,\s]+)', line): # corners: 2,4,17 3,8,5 ...
+						self.algo.corners= [ c.split(',') for c in re.split(r'\s+', a) ]
+						iface= { str(v):str(f) for f in self.faces.keys() for v in self.faces[f] }
+						self.algo.corder= [ [ iface[i] for i in c ] for c in self.algo.corners ]
+					for a in re.findall( r'revcol:\s*([\d,\s]+)-([\d,\s]+)', line): # revcol: 0,1,2-5,3,4
+						rcF,fcT = re.findall(r'\d+',a[0]), re.findall(r'\d+',a[1])
+						self.algo.revcol= { f:fcT[i] for i,f in enumerate(rcF) }
+					self.zero= line; self.uzero= line.upper() # zero cube string
+				elif mode==3: self.mod3d.parseFacesLine(line, self) # faces in 3d model, fills self.facecol
 		self.mod3d.init(); self.showDefMask= self.followFrame= False # prepare mod3d & init model options
 		print()
 
@@ -580,7 +589,7 @@ class MainScreen:
 	# put colored, multi-line text in the center of a rectangle
 	def putTextCenter(self, txt, xy, col=(255,255,255), fsz=None, w=0, h=0, fw=1, ff=cv2.FONT_HERSHEY_SIMPLEX):
 		sz= fsz if fsz else 0.5
-		lines= [ (re.split('&[0-9]',l), re.findall('&[0-9]',l)) for l in re.split('\n',txt) ] # text lines and blocks
+		lines= [ (re.split('[&~][0-9]+\]?',l), re.findall('[&~][0-9]+',l)) for l in re.split('\n',txt) ] # text lines and blocks
 		carr= [col] if type(col)==tuple else col # initialize color array
 		while True:
 			twhs= [[cv2.getTextSize(b, ff, sz, fw)[0] for b in l[0]] for l in lines] # width,height for blocks in lines
@@ -594,8 +603,11 @@ class MainScreen:
 			x= int(xy[0]+(w-tw)/2) # x-pos of the line
 			for j,b in enumerate(l[0]): # iterate blocks in line
 				cv2.putText(self.img, b, (x,y), ff, sz, c, fw, cv2.LINE_AA) # write block
-				if j<len(l[1]): c= carr[int(l[1][j][1])] # if have a command '&D' switch to color D
-				x+= twhs[i][j][0] # next block in line
+				if j<len(l[1]): 
+					c= carr[int(l[1][j][1:])] # if have a command '&D' switch to color D
+					if l[1][j][0]=='~': x= int(xy[0]+(2*w-tw)/2) # put center
+					else: x+= twhs[i][j][0] # next block in line
+				else: x+= twhs[i][j][0] # next block in line
 			y+= lh*3//2 # next line with 1.5 line height
 
 	def chooseModel(self, allModelsDict): # show models
@@ -604,17 +616,17 @@ class MainScreen:
 		sSz= self.sSz
 		for r,(j,m) in enumerate(allModelsDict.items()): # number of model, model dict key and the model object
 			if m.file=='cube333gear': m.mod3d.colors= { n:'' for n in range(54,253) }
-			for i,c in enumerate(m.zero.upper()): m.mod3d.colors[i]= c.upper() # use zero cube colors
+			for i,c in enumerate(m.zero): m.mod3d.colors[i]= c # use zero cube colors
 			x,y= int(self.width*0.09+ww*(r%nr)), int(self.height*0.12+hh*int(r/nr))
 			cv2.rectangle(self.img, (x-sSz*3//2, y-2*sSz), (x+d+sSz*3//2, y+d+4*sSz), (32,32,32), -1)
 			m.mod3d.origami(1)
-			m.mod3d.draw(m, self, x, y, d, d, cmap=cubModDict[j].defcol, showcam=False) # show the model
+			m.mod3d.draw(m, self, x, y, d, d, cmap=defCol, showcam=False) # show the model
 			self.putTextCenter(str(j+1)+". "+m.file, (x,y+d+2*sSz), (255,255,255), w=d, h=4*sSz//3)
 		self.show() # show choose model dialog
 
 	def drawModels(self, cm, face=999): # draw 2d and 3d models
 		hl= cm.faces[face] if 0<=face and face<len(cm.faces) else [] # items to highlight
-		cm.sch2d.draw(self, self.modX1, self.modY1, self.modW, self.modH, hl=hl, colmap=cm.defcol)
+		cm.sch2d.draw(self, self.modX1, self.modY1, self.modW, self.modH, hl=hl, colmap=defCol)
 		if face<len(cm.faces): cm.mod3d.draw(cm, scr, face=face, start=True)
 
 	def drawCamFrame(self, cm, cam): # show cam frame & information under it
@@ -626,19 +638,29 @@ class MainScreen:
 				f'&1ESC&0 - exit from the calibration mode\n'
 				f'&1BACKSPACE&0 - remove last defined color\n'
 				f'&1DEL&0 - clear all calibrated colors for the model\n'
-				)+'\n'.join(list(f'&1{c}&0 - {cm.colname[c.upper()]}' for c in list(set(cm.zero.lower())))) # list all colors by name from the model
+				)+'\n'.join(f'&{sorted(colorList).index(c)+2}{c.upper()}&0 - {colName[c]}' # list model's colors
+					for c in sorted(cm.cset)) 
+			elif cm.mode==2: txt= ( # color set choose mode
+				f'&1ESC&0 - exit from the calibration mode\n'
+				f'&1BACKSPACE&0 - remove last color in the color-set\n'
+				f'&1DEL&0 - clear all calibrated colors for the model\n'
+				f'&1SPACE&0 - use default colors {"".join(sorted(set(cm.uzero), key=cm.uzero.index))}\n\n'
+				f'choose {len(cm.faces)} colors of your puzzle:'
+				)+''.join(f'{chr(10)+"&" if i%2==0 else "~"}{i+2}{"*" if c in sorted(cm.cset) else ""}{c.upper()}&0 - {colName[c]}' # list all colors
+					for i,c in enumerate(sorted(colorList))) 
 			else: txt= (
 				f'&1ESC&0 - exit and choose a new model\n'
-				f'&1LEFT,RIGHT arrow&0 or &19&0,&10&0 - move along faces\n'
+				f'&1LEFT,RIGHT arrow&0 or &1]9&0,&1]0&0 - move along faces\n'
 				f'{"&1SPACE&0 - accept suggested colors" if cam.cols and cm.cmap and len(cm.cmap)>0 else ""}\n'
 				f'{"&1ENTER&0 - all colors are defined, solve the cube" if scr.showColorsStat(cm) else ""}\n'
-				f'{"&11&0 - calibration" if not cm.followFrame else ""}\n'
+				f'{"&1]1&0 - calibration" if not cm.followFrame else ""}\n'
 				f'{"accurately place the cube in the grid and press &11&0" if not cm.followFrame else ""}\n\n'
-				f'{"&12&0 - grid auto-detection is &1"+("on" if cm.followFrame else "off")+"&0" if cm.cmap and len(cm.cmap)>0 else ""}\n'
-				f'{"&13&0 - contours mask is &1"+("on" if cm.showDefMask else "off")+"&0" if cm.followFrame else ""}\n'
-				f'&14&0 - solve random cube'
+				f'{"&1]2&0 - grid auto-detection is &1"+("on" if cm.followFrame else "off")+"&0" if cm.cmap and len(cm.cmap)>1 else ""}\n'
+				f'{"&1]3&0 - contours mask is &1"+("on" if cm.showDefMask else "off")+"&0" if cm.followFrame else ""}\n'
+				f'&1]4&0 - solve random cube'
 				)
-		self.putTextCenter(txt, (self.camX, self.camY2+self.sSz*4),	[(128,128,128),(192,128,128),(32,32,32)],
+		self.putTextCenter(txt, (self.camX, self.camY2+self.sSz*4),	[(128,128,128),(192,128,128)]
+			+[defCol[c] for c in sorted(colorList)],
 			w=self.camW, h=self.height-self.camY2-6*self.sSz)
 
 	def drawColorMap(self, cm, cam=None): # show color map and detected colors
@@ -698,12 +720,14 @@ class MainScreen:
 		ccn= { c:acl.count(c) for c in set(acl) } # colors count hash
 		csa,isok,isne = [],True,True # list with text stats for each color, stats ok flag and not empty flag
 		x1,y1,x2,y2 = self.camX, self.camY2, self.camX+self.camW, self.camY2+sSz*4
-		for c in set(cm.zero.upper()): # unique colors from zero cube
-			ccn[c]= ccn[c] if c in ccn else 0
-			cc= cm.zero.upper().count(c)
-			csa.append( c+':'+('&1' if ccn[c]!=cc else '')+str(ccn[c])+'&0/'+str(cc) ) # text for the color
-			if ccn[c]>0 and isne: isne= False
-			if ccn[c]!=cc: isok= False
+		if len(cm.cset)==len(cm.faces):
+			for c in sorted(cm.cset): # unique colors
+				ccn[c]= ccn[c] if c in ccn else 0
+				cc= len(cm.zero)//len(cm.faces) if cm.algname!='cube223' else (6,6,6,6,4,4)[cm.cset.index(c)]
+				csa.append( c+':'+('&1]' if ccn[c]!=cc else '&0]')+str(ccn[c])+'&0/'+str(cc) ) # text for the color
+				if ccn[c]>0 and isne: isne= False
+				if ccn[c]!=cc: isok= False
+		else: isok= False
 		cv2.rectangle(self.img, (x1,y1), (x2,y2), (32,32,32), -1 ) # clear area under the camera
 		if not isne: # color statistics text
 			self.putTextCenter('  '.join(csa), (x1,y1+sSz//2), [(128,128,128),(128,128,192)], w=self.camW, h=3*sSz//2)
@@ -723,7 +747,7 @@ class MainScreen:
 		w,h = int((self.width-2*x0)/self.perline),int((self.height-2*x0)/self.lines)
 		x,y = x0,y0; i=0
 		for v in solution: # for each position in the solution
-			cm.mod3d.draw(cm, self, x, y, int(w*0.8), int(h*0.8), cmap=cm.defcol, # draw the position
+			cm.mod3d.draw(cm, self, x, y, int(w*0.8), int(h*0.8), cmap=defCol, # draw the position
 				mshow=cm.moves.moveshow[v], mmark=cm.moves.movemark[v], showcam=False)
 			self.putTextCenter(cm.moves.movename[v] if v in cm.moves.movename else "", # show move name like Uw2'
 				(x+int(w/20),y+int(h/20)-20), fsz=0.75)
@@ -738,7 +762,7 @@ class MainScreen:
 					(0,0,0), 1, cv2.LINE_AA )
 				x+= w; i+= 1
 		if page==npages-1 or len(solution)==0: # solved cube as a final step
-			cm.mod3d.draw(cm, self, x, y, int(w*0.8), int(h*0.8), cmap=cm.defcol, showcam=False)
+			cm.mod3d.draw(cm, self, x, y, int(w*0.8), int(h*0.8), cmap=defCol, showcam=False)
 		if npages>1: # page navigator
 			self.putTextCenter('page '+str(page+1)+'/'+str(npages)+' use Left-Right arrows or 9,0 or page number 1,2,... to go through the pages',
 				(self.width/2, self.height-0.5*y0), (80,80,80), fsz=0.9)
@@ -773,11 +797,6 @@ class ProcessCam:
 				cm.cmap[c].append([int(self.avgHSV[n][0]), int(self.avgHSV[n][1]), int(self.avgHSV[n][2])])
 			cm.cmap[c]= cm.cmap[c][-16:] # keep last 16 color points
 			pkl= open('colors.pkl', 'wb'); pickle.dump(allcolors, pkl); pkl.close()
-			#f= open('allcolors.py','w'); f.write('data={\n')
-			#for fn,cl in allcolors.data.items(): # write out {'cube333.cr': {'R':[[75,125,100],[76,126,101],...],...}
-			#	L=[ f"'{cn}':[[{'],['.join( ','.join(str(v) for v in c) for c in lst )}]],\n" for cn,lst in cl.items() ]
-			#	f.write( f"'{fn}':{{ \n{''.join(L)}\t}},\n" )
-			#f.write('}'); f.close()
 
 	def nearlestColor(self, cm, tc, face=None): # find nearest color: model; color; face of the model, None - every face
 		dist= lambda z: ( # my color distance not ideal but fast
@@ -913,6 +932,12 @@ class ProcessCam:
 #
 file, filecmd = sys.argv[1] if len(sys.argv)>1 else None, sys.argv[2] if len(sys.argv)>2 else None
 scr, cam = MainScreen(), ProcessCam() # screen and cam objects
+if filecmd and sorted(filecmd)==['B','D','F','L','R','U'] and len(sys.argv)>3:
+	c0,c1 = list(sys.argv[3]),[]; nf = len(c0)//len(filecmd)
+	for i,f in enumerate('UFRBLD'):
+		j= filecmd.index(f); c1[i*nf:i*nf+nf]= c0[j*nf:j*nf+nf]
+	filecmd= ''.join(c1).replace('F','r').replace('R','b').replace('B','o').replace('L','g').replace('U','w').replace('D','y')
+
 print('model='+(file if file else 'None'), 'command='+(filecmd if filecmd else 'None'))
 cm= CubeModel(file) if file else None # current model if defined
 
@@ -943,7 +968,7 @@ while True: # main loop - initialize detection of the cube and start reading col
 		scr.img[:]= (32,32,32); scr.show() # clear screen
 		cm.sch2d.colors= cm.mod3d.colors= {n:'' for n in range(54,253)} if cm.file=='cube333gear' else {} # clear colors
 		scr.drawColorMap(cm); cam.findColors(cm, face); scr.drawCamFrame(cm, cam); scr.drawModels(cm) # show everything
-		cm.mod3d.draw(cm, scr, scr.modX1, scr.modY2+scr.modH-scr.modW, scr.modW, scr.modW, cm.defcol, start=True)
+		cm.mod3d.draw(cm, scr, scr.modX1, scr.modY2+scr.modH-scr.modW, scr.modW, scr.modW, defCol, start=True)
 		while not cm.mod3d.draw(cm, scr): # show origami cartoon
 			cam.getFrame(); cam.camP= {}; scr.drawCamFrame(cm, cam); cv2.imshow("window", scr.img); cv2.waitKey(1)
 		scr.drawColorMap(cm); scr.drawModels(cm,face); scr.preparing= False # initialize screen objects
@@ -973,9 +998,10 @@ while True: # main loop - initialize detection of the cube and start reading col
 
 			elif cm.mode==1: # color calibration mode
 				scr.drawCamFrame(cm, cam)
+				if len(cm.cset)!=len(cm.faces): cm.mode=2; continue
 				if c==27: cm.mode= 0; continue # go to normal mode
-				elif c in (ord(x) for x in set(cm.zero.lower())): # color letter like r,g,b,o,w,y
-					cam.cols[ cm.faces[face][colorIndex] ]= chr(c).upper() # set upper letter for current item
+				elif c in (ord(x) for x in cm.cset): # color letter like r,g,b,o,w,y
+					cam.cols[ cm.faces[face][colorIndex] ]= chr(c) # set color letter for current item
 					colorIndex+= 1 # next item
 					if colorIndex>=len(cm.faces[face]): # colors are set, go to next face
 						cam.saveColors(cm,True); scr.drawColorMap(cm)
@@ -986,7 +1012,20 @@ while True: # main loop - initialize detection of the cube and start reading col
 				elif c==8 and colorIndex>0: # backspace - clear last color
 					cam.cols[cm.faces[face][colorIndex]]= ''
 					colorIndex-= 1; cam.cols[ cm.faces[face][colorIndex] ]= '?'
-				elif c in (65535,3014656): cm.cmap.clear(); scr.drawColorMap(cm) # del - clear palette
+				elif c in (65535,3014656): cm.cmap.clear(); cm.cset.clear(); scr.drawColorMap(cm) # del - clear palette
+
+			elif cm.mode==2: # color set choose
+				scr.drawCamFrame(cm, cam)
+				if c==27: cm.mode= 0; continue # go to normal mode
+				elif c==32: # space - save & move to the next face
+					cm.cset.clear(); cm.cset.extend(sorted(set(cm.zero))); cm.mode= 1; continue
+				elif c==8 and len(cm.cset)>0: cm.cset.pop()
+				elif 0<c and c<255:
+					if chr(c) in colorList and chr(c) in cm.cset: cm.cset.remove(chr(c))
+					elif chr(c) in colorList and chr(c) not in cm.cset:
+						cm.cset.append(chr(c))
+						if len(cm.cset)==len(cm.faces): cm.mode=1; continue
+				elif c in (65535,3014656): cm.cmap.clear(); cm.cset.clear(); scr.drawColorMap(cm) # del - clear palette
 
 			frameCnt+= 1; time1= datetime.datetime.now(); time= (time1-time0).total_seconds()
 			if time>1:
@@ -1001,7 +1040,7 @@ while True: # main loop - initialize detection of the cube and start reading col
 		if not cube: # build cube string with defined colors from the model
 			cube= ''.join([cm.sch2d.colors[c].lower() for c in sorted(cm.sch2d.colors.keys())])
 		else:
-			for i,c in enumerate(cube): cm.mod3d.colors[i]= c.upper() # predefined cube - write colors to the model
+			for i,c in enumerate(cube): cm.mod3d.colors[i]= c # predefined cube - write colors to the model
 		print('cube=',cube,'\n')
 		if cm.file=='cube333gear':
 			for n in range(54,253): cm.mod3d.colors[n]= cm.sch2d.colors[n]= ''
